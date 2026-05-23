@@ -1,17 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <rect width="512" height="512" rx="110" fill="#0A0A0F"/>
-  <!-- bar center -->
   <rect x="176" y="232" width="160" height="48" rx="10" fill="#FF6B35"/>
-  <!-- left weight plate outer -->
   <rect x="100" y="176" width="80" height="160" rx="18" fill="#FF6B35" opacity="0.75"/>
-  <!-- left weight plate inner -->
   <rect x="116" y="200" width="48" height="112" rx="12" fill="#FF6B35"/>
-  <!-- right weight plate outer -->
   <rect x="332" y="176" width="80" height="160" rx="18" fill="#FF6B35" opacity="0.75"/>
-  <!-- right weight plate inner -->
   <rect x="348" y="200" width="48" height="112" rx="12" fill="#FF6B35"/>
-  <!-- left collar -->
   <rect x="72" y="208" width="34" height="96" rx="10" fill="#FF6B35" opacity="0.55"/>
-  <!-- right collar -->
   <rect x="406" y="208" width="34" height="96" rx="10" fill="#FF6B35" opacity="0.55"/>
 </svg>

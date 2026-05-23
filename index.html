@@ -13,20 +13,12 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg:    #0A0A0F;
-  --bg2:   #0D0D1A;
-  --bg3:   #0F0F1E;
-  --border:#1E1E2E;
-  --text:  #E8E8E8;
-  --muted: #888;
-  --dim:   #555;
-  --push:  #FF6B35;
-  --pull:  #00D4AA;
-  --legs:  #A855F7;
-  --rest:  #64748B;
-  --nav-h: 62px;
-  --safe:  env(safe-area-inset-bottom, 0px);
+:root{
+  --bg:#0A0A0F;--bg2:#0D0D1A;--bg3:#0F0F1E;--border:#1E1E2E;
+  --text:#E8E8E8;--muted:#888;--dim:#555;
+  --push:#FF6B35;--pull:#00D4AA;--legs:#A855F7;--rest:#64748B;
+  --gold:#F59E0B;--red:#EF4444;--green:#22C55E;
+  --nav-h:62px;--safe:env(safe-area-inset-bottom,0px);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;-webkit-tap-highlight-color:transparent;overscroll-behavior:none}
@@ -38,811 +30,866 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 /* NAV */
 .nav{position:fixed;bottom:0;left:0;right:0;height:calc(var(--nav-h) + var(--safe));padding-bottom:var(--safe);background:#0C0C16;border-top:1px solid var(--border);display:flex;z-index:100}
 .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:none;border:none;cursor:pointer;color:var(--dim);font-size:10px;font-family:'DM Sans',sans-serif;letter-spacing:.5px;text-transform:uppercase;transition:color .2s;padding:8px 0;-webkit-tap-highlight-color:transparent}
-.nav-btn .nav-icon{font-size:22px}
+.nav-btn .ni{font-size:20px}
 .nav-btn.active{color:var(--push)}
 
 /* SHARED */
-.page-header{padding:20px 20px 14px;background:linear-gradient(180deg,#0E0E18 0%,var(--bg) 100%);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10}
-.page-title{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;color:#fff}
-.page-sub{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-top:2px}
-.section{padding:14px 16px}
-.section+.section{padding-top:0}
+.ph{padding:18px 16px 12px;background:linear-gradient(180deg,#0E0E18 0%,var(--bg) 100%);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10}
+.pt{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px;color:#fff}
+.ps{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-top:2px}
+.sec{padding:12px 16px}
 .card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden}
-.mt8{margin-top:8px}
-.mt12{margin-top:12px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:12px 18px;border-radius:10px;border:none;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:opacity .15s,transform .1s;-webkit-tap-highlight-color:transparent}
-.btn:active{transform:scale(0.97);opacity:.85}
-.btn-primary{background:var(--push);color:#fff}
-.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text)}
-.btn-danger{background:#EF4444;color:#fff}
-.btn-full{width:100%}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:11px 16px;border-radius:10px;border:none;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:opacity .15s,transform .1s;-webkit-tap-highlight-color:transparent}
+.btn:active{transform:scale(.97);opacity:.85}
+.btn-p{background:var(--push);color:#fff}
+.btn-o{background:transparent;border:1px solid var(--border);color:var(--text)}
+.btn-d{background:var(--red);color:#fff}
+.btn-g{background:var(--green);color:#fff}
+.btn-f{width:100%}
+.label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:8px;padding-left:2px}
 
 /* ── JADWAL ── */
-.day-tabs-bar{overflow-x:auto;padding:10px 16px;background:#0C0C16;border-bottom:1px solid var(--border)}
-.day-tabs-bar::-webkit-scrollbar{display:none}
-.day-tabs{display:flex;gap:8px;min-width:max-content}
-.day-tab{background:transparent;border:1px solid var(--border);color:var(--muted);cursor:pointer;padding:7px 13px;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;letter-spacing:1px;text-transform:uppercase;transition:all .2s;white-space:nowrap;-webkit-tap-highlight-color:transparent}
-.day-card{border-radius:12px;padding:16px;border:1px solid transparent;margin-bottom:12px}
-.day-card-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px}
-.day-name-sub{font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:3px}
-.day-name-main{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:#fff;line-height:1}
-.day-name-tag{font-size:13px;color:var(--muted);margin-top:3px}
-.rec-box{background:rgba(0,0,0,.3);border:1px solid #2A2A3A;border-radius:8px;padding:7px 12px;text-align:center}
-.rec-label{font-size:9px;color:var(--dim);letter-spacing:1px;text-transform:uppercase}
-.rec-val{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:1px}
-.day-focus{margin-top:10px;padding-top:10px;font-size:13px;color:#ccc}
-.day-focus b{margin-right:5px}
-.ex-table{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:4px 16px 8px}
-.ex-thead{display:grid;grid-template-columns:1fr 50px 70px;gap:8px;padding:9px 0 5px;border-bottom:1px solid var(--border)}
-.ex-thead span{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim)}
-.ex-thead span:nth-child(2),.ex-thead span:nth-child(3){text-align:center}
-.ex-row{display:grid;grid-template-columns:1fr 50px 70px;gap:8px;align-items:center;padding:9px 0;border-bottom:1px solid #1A1A28}
-.ex-row:last-child{border-bottom:none}
-.ex-name{font-size:13px;color:#DDD}
-.ex-badge{display:inline-block;font-size:10px;padding:2px 6px;border-radius:4px;margin-left:4px;vertical-align:middle}
-.ex-sets{font-family:'Bebas Neue',sans-serif;font-size:17px;color:#fff;text-align:center}
-.ex-sets.empty,.ex-reps.empty{color:#333}
-.ex-reps{font-size:12px;font-weight:500;text-align:center}
-.finisher-card{border-radius:10px;padding:11px 14px;display:flex;align-items:center;gap:10px;border:1px solid transparent;margin-top:10px}
-.finisher-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-bottom:2px}
-.finisher-text{font-size:13px;color:#ccc}
+.dtbar{overflow-x:auto;padding:10px 16px;background:#0C0C16;border-bottom:1px solid var(--border)}
+.dtbar::-webkit-scrollbar{display:none}
+.dts{display:flex;gap:8px;min-width:max-content}
+.dt{background:transparent;border:1px solid var(--border);color:var(--muted);cursor:pointer;padding:7px 12px;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;letter-spacing:1px;text-transform:uppercase;transition:all .2s;white-space:nowrap;-webkit-tap-highlight-color:transparent}
+.dcard{border-radius:12px;padding:14px;border:1px solid transparent;margin-bottom:10px}
+.dctop{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px}
+.dns{font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:3px}
+.dnm{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;color:#fff;line-height:1}
+.dnt{font-size:13px;color:var(--muted);margin-top:3px}
+.rb{background:rgba(0,0,0,.3);border:1px solid #2A2A3A;border-radius:8px;padding:6px 11px;text-align:center}
+.rl{font-size:9px;color:var(--dim);letter-spacing:1px;text-transform:uppercase}
+.rv{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px}
+.df{margin-top:10px;padding-top:10px;font-size:13px;color:#ccc}
+.df b{margin-right:5px}
+.ext{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:4px 14px 8px}
+.exh{display:grid;grid-template-columns:1fr 48px 68px;gap:8px;padding:8px 0 5px;border-bottom:1px solid var(--border)}
+.exh span{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim)}
+.exh span:nth-child(2),.exh span:nth-child(3){text-align:center}
+.exr{display:grid;grid-template-columns:1fr 48px 68px;gap:8px;align-items:center;padding:9px 0;border-bottom:1px solid #1A1A28}
+.exr:last-child{border-bottom:none}
+.exn{font-size:13px;color:#DDD}
+.exb{display:inline-block;font-size:10px;padding:2px 6px;border-radius:4px;margin-left:4px;vertical-align:middle}
+.exs{font-family:'Bebas Neue',sans-serif;font-size:16px;color:#fff;text-align:center}
+.exs.e,.exrp.e{color:#333}
+.exrp{font-size:12px;font-weight:500;text-align:center}
+.fin{border-radius:10px;padding:11px 14px;display:flex;align-items:center;gap:10px;border:1px solid transparent;margin-top:10px}
+.fl{font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-bottom:2px}
+.ft{font-size:13px;color:#ccc}
 
 /* ── HARI INI ── */
-.prog-wrap{padding:12px 16px 0}
-.prog-bar-bg{background:var(--border);border-radius:99px;height:5px;overflow:hidden;margin-top:7px}
-.prog-bar-fill{height:100%;border-radius:99px;background:var(--push);transition:width .35s}
-.check-item{display:flex;align-items:center;gap:14px;padding:13px 16px;border-bottom:1px solid #1A1A28;cursor:pointer;transition:background .15s;-webkit-tap-highlight-color:transparent}
-.check-item:last-child{border-bottom:none}
-.check-item:active{background:rgba(255,255,255,.03)}
-.check-box{width:22px;height:22px;border-radius:6px;border:2px solid var(--dim);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;font-size:13px;color:#fff}
-.check-item.done .check-box{border-color:transparent}
-.check-item.done .ex-name{text-decoration:line-through;color:var(--dim)}
-.check-info{flex:1}
-.check-sets{font-size:11px;color:var(--muted);margin-top:2px}
+/* Streak */
+.streak-wrap{margin:12px 16px 0;background:linear-gradient(135deg,#FF6B3520,#FF6B3508);border:1px solid #FF6B3540;border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:14px}
+.streak-fire{font-size:36px;line-height:1}
+.streak-num{font-family:'Bebas Neue',sans-serif;font-size:42px;color:var(--push);line-height:1}
+.streak-label{font-size:11px;color:var(--muted);margin-top:2px;letter-spacing:.5px}
+.streak-best{font-size:11px;color:var(--dim);margin-top:4px}
+/* Progress bar */
+.pw{padding:10px 16px 0}
+.pb-top{display:flex;justify-content:space-between;align-items:center}
+.pb-bg{background:var(--border);border-radius:99px;height:5px;overflow:hidden;margin-top:6px}
+.pb-fill{height:100%;border-radius:99px;transition:width .35s}
+/* Checklist */
+.ci{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid #1A1A28;cursor:pointer;transition:background .15s;-webkit-tap-highlight-color:transparent}
+.ci:last-child{border-bottom:none}
+.ci:active{background:rgba(255,255,255,.03)}
+.cbox{width:22px;height:22px;border-radius:6px;border:2px solid var(--dim);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;transition:all .2s}
+.ci.done .cbox{border-color:transparent}
+.ci.done .exn{text-decoration:line-through;color:var(--dim)}
+.cinfo{flex:1}
+.csets{font-size:11px;color:var(--muted);margin-top:2px}
 
 /* ── TIMER ── */
-.timer-wrap{display:flex;flex-direction:column;align-items:center;padding:20px 16px;gap:20px}
-.timer-svg-wrap{position:relative;width:210px;height:210px}
-.timer-svg{transform:rotate(-90deg)}
-.timer-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
-.timer-display{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:2px;color:#fff;line-height:1}
-.timer-status{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-top:4px}
+.twrap{display:flex;flex-direction:column;align-items:center;padding:16px;gap:16px}
+.tsvgw{position:relative;width:200px;height:200px}
+.tsvg{transform:rotate(-90deg)}
+.ttext{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+.tdisp{font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:2px;color:#fff;line-height:1}
+.tstat{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-top:3px}
 .presets{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;width:100%}
-.preset-btn{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:8px 13px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent}
-.preset-btn:active{transform:scale(.95)}
-.preset-btn.selected{border-color:var(--push);color:var(--push);background:rgba(255,107,53,.1)}
-.timer-btns{display:flex;gap:10px;width:100%}
-.timer-btns .btn{flex:1}
-.custom-row{display:flex;gap:8px;width:100%}
-.custom-row input{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none}
-.custom-row input:focus{border-color:var(--push)}
-.custom-row input::placeholder{color:var(--dim)}
+.pre{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent}
+.pre:active{transform:scale(.95)}
+.pre.sel{border-color:var(--push);color:var(--push);background:rgba(255,107,53,.1)}
+.tbtns{display:flex;gap:10px;width:100%}
+.tbtns .btn{flex:1}
+.crow{display:flex;gap:8px;width:100%}
+.crow input{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none}
+.crow input:focus{border-color:var(--push)}
+.crow input::placeholder{color:var(--dim)}
 
-/* ── LOG ── */
-.log-form{padding:14px 16px}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.form-group{display:flex;flex-direction:column;gap:5px;margin-bottom:10px}
-.form-label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim)}
-.form-input{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;width:100%}
-.form-input:focus{border-color:var(--push)}
-.form-input::placeholder{color:var(--dim)}
-.log-list{padding:0 16px 16px}
-.log-date-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:8px;padding-left:2px}
-.log-entry{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:11px 13px;margin-bottom:7px;display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
-.log-entry-name{font-size:14px;color:#ddd;font-weight:500}
-.log-entry-detail{font-size:12px;color:var(--muted);margin-top:2px}
-.log-entry-del{background:none;border:none;color:var(--dim);cursor:pointer;font-size:16px;flex-shrink:0;padding:2px 4px;border-radius:4px;transition:color .2s;-webkit-tap-highlight-color:transparent}
-.log-entry-del:active{color:#EF4444}
-.log-empty{text-align:center;color:var(--dim);font-size:13px;padding:40px 0;line-height:1.7}
-.log-date-group{margin-bottom:14px}
+/* ── LOG & PROGRES ── */
+.tab-switch{display:flex;gap:0;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:3px;margin:12px 16px 0}
+.tsw{flex:1;padding:8px;border-radius:7px;border:none;background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent}
+.tsw.on{background:var(--push);color:#fff}
+/* log form */
+.lform{padding:12px 16px}
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:10px}
+.flabel{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim)}
+.fi{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;width:100%}
+.fi:focus{border-color:var(--push)}
+.fi::placeholder{color:var(--dim)}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+/* log entries */
+.llist{padding:0 16px 12px}
+.ldl{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:6px;padding-left:2px}
+.lentry{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.lname{font-size:14px;color:#ddd;font-weight:500}
+.ldet{font-size:12px;color:var(--muted);margin-top:2px}
+.ldel{background:none;border:none;color:var(--dim);cursor:pointer;font-size:15px;flex-shrink:0;padding:2px 4px;border-radius:4px;-webkit-tap-highlight-color:transparent}
+.ldel:active{color:var(--red)}
+.pr-badge{display:inline-flex;align-items:center;gap:3px;background:rgba(245,158,11,.15);color:var(--gold);border:1px solid rgba(245,158,11,.3);border-radius:4px;font-size:10px;font-weight:600;padding:2px 6px;margin-left:6px;vertical-align:middle}
+.lempty{text-align:center;color:var(--dim);font-size:13px;padding:32px 0;line-height:1.8}
+.ldg{margin-bottom:12px}
+/* PR list */
+.pr-item{display:flex;justify-content:space-between;align-items:center;padding:11px 14px;border-bottom:1px solid #1A1A28}
+.pr-item:last-child{border-bottom:none}
+.pr-exname{font-size:13px;color:#ddd}
+.pr-val{text-align:right}
+.pr-weight{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--gold);letter-spacing:1px}
+.pr-date{font-size:11px;color:var(--dim);margin-top:1px}
+/* Chart */
+.chart-wrap{padding:12px 16px}
+.chart-select{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;width:100%;margin-bottom:12px;-webkit-appearance:none}
+.chart-box{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px;overflow:hidden}
+.chart-empty{text-align:center;color:var(--dim);font-size:13px;padding:24px 0}
 
 /* ── SETTING ── */
-.setting-item{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid var(--border)}
-.setting-item:last-child{border-bottom:none}
-.setting-label{font-size:14px;color:var(--text)}
-.setting-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.sit{display:flex;justify-content:space-between;align-items:center;padding:13px 14px;border-bottom:1px solid var(--border)}
+.sit:last-child{border-bottom:none}
+.slbl{font-size:14px;color:var(--text)}
+.ssub{font-size:12px;color:var(--muted);margin-top:2px}
 .toggle{position:relative;width:44px;height:24px;flex-shrink:0}
 .toggle input{opacity:0;width:0;height:0}
-.toggle-slider{position:absolute;inset:0;background:#333;border-radius:99px;cursor:pointer;transition:background .2s}
-.toggle-slider::after{content:'';position:absolute;width:18px;height:18px;border-radius:50%;background:#fff;top:3px;left:3px;transition:transform .2s}
-.toggle input:checked+.toggle-slider{background:var(--push)}
-.toggle input:checked+.toggle-slider::after{transform:translateX(20px)}
-.time-input{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;outline:none;width:100px;text-align:center}
-.time-input:focus{border-color:var(--push)}
-.notif-badge{display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:5px 10px;border-radius:6px}
-.notif-granted{background:rgba(0,212,170,.1);color:var(--pull)}
-.notif-denied{background:rgba(239,68,68,.1);color:#EF4444}
-.notif-default{background:rgba(255,107,53,.1);color:var(--push)}
-.install-steps{font-size:13px;color:var(--muted);line-height:1.8;padding:4px 0}
-.install-steps b{color:var(--text)}
+.tgl{position:absolute;inset:0;background:#333;border-radius:99px;cursor:pointer;transition:background .2s}
+.tgl::after{content:'';position:absolute;width:18px;height:18px;border-radius:50%;background:#fff;top:3px;left:3px;transition:transform .2s}
+.toggle input:checked+.tgl{background:var(--push)}
+.toggle input:checked+.tgl::after{transform:translateX(20px)}
+.ti{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:8px 10px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;outline:none;width:100px;text-align:center}
+.ti:focus{border-color:var(--push)}
+.nb{display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:5px 10px;border-radius:6px}
+.ng{background:rgba(0,212,170,.1);color:var(--pull)}
+.nd{background:rgba(239,68,68,.1);color:var(--red)}
+.ndf{background:rgba(255,107,53,.1);color:var(--push)}
+.stat-num{font-family:'Bebas Neue',sans-serif;font-size:22px}
 
 /* TOAST */
-#toast{position:fixed;bottom:calc(var(--nav-h) + var(--safe) + 14px);left:50%;transform:translateX(-50%) translateY(16px);background:#1E1E30;border:1px solid var(--border);color:var(--text);padding:10px 18px;border-radius:99px;font-size:13px;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;z-index:200}
+#toast{position:fixed;bottom:calc(var(--nav-h) + var(--safe) + 12px);left:50%;transform:translateX(-50%) translateY(12px);background:#1A1A2E;border:1px solid var(--border);color:var(--text);padding:9px 16px;border-radius:99px;font-size:13px;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;z-index:200}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* TIMER DONE OVERLAY */
-#done-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:300;align-items:center;justify-content:center;flex-direction:column;gap:14px;text-align:center;padding:32px}
-#done-overlay.show{display:flex}
-.done-emoji{font-size:60px}
-.done-title{font-family:'Bebas Neue',sans-serif;font-size:34px;letter-spacing:2px;color:#fff}
-.done-sub{font-size:14px;color:var(--muted)}
+/* DONE OVERLAY */
+#dov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:300;align-items:center;justify-content:center;flex-direction:column;gap:12px;text-align:center;padding:32px}
+#dov.show{display:flex}
+.do-em{font-size:56px}
+.do-t{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:2px;color:#fff}
+.do-s{font-size:13px;color:var(--muted)}
+
+/* PR Overlay */
+#prov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:300;align-items:center;justify-content:center;flex-direction:column;gap:12px;text-align:center;padding:32px}
+#prov.show{display:flex}
+.pr-em{font-size:56px}
+.pr-t{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:var(--gold)}
+.pr-s{font-size:14px;color:#ccc}
+.pr-ex{font-size:18px;color:#fff;font-weight:600;margin-top:4px}
 </style>
 </head>
 <body>
 <div id="app">
 
-  <!-- ════════════ JADWAL ════════════ -->
-  <div class="screen active" id="s-jadwal">
-    <div class="page-header">
-      <div class="page-title">JADWAL</div>
-      <div class="page-sub">Aesthetic + Functional Program</div>
-    </div>
-    <div class="day-tabs-bar"><div class="day-tabs" id="dayTabs"></div></div>
-    <div class="section" id="dayPanel"></div>
-  </div>
-
-  <!-- ════════════ HARI INI ════════════ -->
-  <div class="screen" id="s-hari">
-    <div class="page-header">
-      <div class="page-title" id="hariTitle">HARI INI</div>
-      <div class="page-sub" id="hariSub">—</div>
-    </div>
-    <div class="prog-wrap">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <span style="font-size:13px;color:var(--muted)">Progress latihan</span>
-        <span style="font-size:13px;font-weight:600" id="progCount">0/0</span>
-      </div>
-      <div class="prog-bar-bg"><div class="prog-bar-fill" id="progBar" style="width:0%"></div></div>
-    </div>
-    <div class="section">
-      <div class="card" id="checkList"></div>
-    </div>
-    <div class="section" style="padding-top:0">
-      <button class="btn btn-outline btn-full" onclick="resetChecklist()" style="font-size:13px;padding:10px">↺ Reset Checklist Hari Ini</button>
-    </div>
-  </div>
-
-  <!-- ════════════ TIMER ════════════ -->
-  <div class="screen" id="s-timer">
-    <div class="page-header">
-      <div class="page-title">REST TIMER</div>
-      <div class="page-sub">Istirahat antar set</div>
-    </div>
-    <div class="timer-wrap">
-      <div class="timer-svg-wrap">
-        <svg class="timer-svg" width="210" height="210" viewBox="0 0 210 210">
-          <circle cx="105" cy="105" r="95" fill="none" stroke="#1E1E2E" stroke-width="8"/>
-          <circle id="timerArc" cx="105" cy="105" r="95" fill="none" stroke="#FF6B35"
-            stroke-width="8" stroke-dasharray="597" stroke-dashoffset="0" stroke-linecap="round"/>
-        </svg>
-        <div class="timer-text">
-          <div class="timer-display" id="timerDisp">01:30</div>
-          <div class="timer-status" id="timerStat">Siap</div>
-        </div>
-      </div>
-
-      <div class="presets" id="presets">
-        <button class="preset-btn" data-sec="30">30d</button>
-        <button class="preset-btn" data-sec="60">1m</button>
-        <button class="preset-btn selected" data-sec="90">1m 30d</button>
-        <button class="preset-btn" data-sec="120">2m</button>
-        <button class="preset-btn" data-sec="180">3m</button>
-      </div>
-
-      <div class="custom-row">
-        <input type="number" id="customSec" placeholder="Custom (detik)..." min="1" max="3600">
-        <button class="btn btn-outline" style="white-space:nowrap" onclick="setCustom()">Set</button>
-      </div>
-
-      <div class="timer-btns">
-        <button class="btn btn-outline" onclick="resetTimer()">Reset</button>
-        <button class="btn btn-primary" id="btnStart" onclick="toggleTimer()">Mulai</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ════════════ LOG ════════════ -->
-  <div class="screen" id="s-log">
-    <div class="page-header">
-      <div class="page-title">LOG WORKOUT</div>
-      <div class="page-sub">Catat progress latihan</div>
-    </div>
-    <div class="log-form">
-      <div class="form-group">
-        <div class="form-label">Nama Latihan</div>
-        <input type="text" id="logEx" class="form-input" placeholder="Contoh: Bench Press...">
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <div class="form-label">Set × Rep</div>
-          <input type="text" id="logSR" class="form-input" placeholder="4×10">
-        </div>
-        <div class="form-group">
-          <div class="form-label">Beban / Catatan</div>
-          <input type="text" id="logW" class="form-input" placeholder="20kg / BW">
-        </div>
-      </div>
-      <button class="btn btn-primary btn-full" onclick="addLog()">+ Tambah ke Log</button>
-    </div>
-    <div id="logList" class="log-list"></div>
-  </div>
-
-  <!-- ════════════ SETTING ════════════ -->
-  <div class="screen" id="s-setting">
-    <div class="page-header">
-      <div class="page-title">PENGATURAN</div>
-      <div class="page-sub">Reminder & preferensi</div>
-    </div>
-
-    <div class="section">
-      <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:10px">Pengingat Latihan</div>
-      <div class="card">
-        <div class="setting-item">
-          <div>
-            <div class="setting-label">Aktifkan Reminder</div>
-            <div class="setting-sub">Notifikasi harian otomatis</div>
-          </div>
-          <label class="toggle">
-            <input type="checkbox" id="remToggle" onchange="saveReminder()">
-            <span class="toggle-slider"></span>
-          </label>
-        </div>
-        <div class="setting-item">
-          <div>
-            <div class="setting-label">Jam Pengingat</div>
-            <div class="setting-sub">Waktu notifikasi dikirim</div>
-          </div>
-          <input type="time" id="remTime" class="time-input" value="06:00" onchange="saveReminder()">
-        </div>
-        <div class="setting-item" style="flex-direction:column;align-items:flex-start;gap:10px">
-          <div>
-            <div class="setting-label">Izin Notifikasi</div>
-            <div class="setting-sub">Wajib untuk reminder berfungsi</div>
-          </div>
-          <div id="notifBadge" class="notif-badge notif-default">⏳ Belum diminta</div>
-          <button class="btn btn-outline" id="notifBtn" onclick="askNotif()" style="font-size:13px;padding:10px 16px">🔔 Minta Izin Notifikasi</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="section mt8">
-      <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:10px">Data & Statistik</div>
-      <div class="card">
-        <div class="setting-item">
-          <div class="setting-label">Total Log Tersimpan</div>
-          <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--push)" id="logCountStat">0</div>
-        </div>
-        <div class="setting-item">
-          <div class="setting-label">Latihan Selesai (Hari Ini)</div>
-          <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--pull)" id="checkCountStat">0</div>
-        </div>
-        <div class="setting-item">
-          <button class="btn btn-danger btn-full" onclick="clearAllLogs()">🗑️ Hapus Semua Log</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="section mt8">
-      <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:10px">Install ke Homescreen</div>
-      <div class="card">
-        <div class="setting-item" style="flex-direction:column;align-items:flex-start;gap:8px">
-          <div class="install-steps">
-            1. Buka file ini di <b>Chrome Android</b><br>
-            2. Tap menu titik tiga <b>⋮</b> di pojok kanan atas<br>
-            3. Pilih <b>"Tambahkan ke layar utama"</b><br>
-            4. Tap <b>Tambahkan</b> — ikon muncul di homescreen!<br>
-            <span style="color:var(--dim);font-size:12px;margin-top:4px;display:block">💡 Setelah diinstall, app bisa jalan offline</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="section mt8">
-      <div class="card">
-        <div class="setting-item" style="justify-content:center">
-          <div style="text-align:center">
-            <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--dim)">WORKOUT TRACKER v1.0</div>
-            <div style="font-size:12px;color:var(--dim);margin-top:2px">Aesthetic + Functional Program</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- BOTTOM NAV -->
-  <nav class="nav">
-    <button class="nav-btn active" onclick="goTo('jadwal',this)">
-      <span class="nav-icon">📅</span><span>Jadwal</span>
-    </button>
-    <button class="nav-btn" onclick="goTo('hari',this)">
-      <span class="nav-icon">✅</span><span>Hari Ini</span>
-    </button>
-    <button class="nav-btn" onclick="goTo('timer',this)">
-      <span class="nav-icon">⏱️</span><span>Timer</span>
-    </button>
-    <button class="nav-btn" onclick="goTo('log',this)">
-      <span class="nav-icon">📊</span><span>Log</span>
-    </button>
-    <button class="nav-btn" onclick="goTo('setting',this)">
-      <span class="nav-icon">⚙️</span><span>Setting</span>
-    </button>
-  </nav>
+<!-- ═══ JADWAL ═══ -->
+<div class="screen active" id="s-jadwal">
+  <div class="ph"><div class="pt">JADWAL</div><div class="ps">Aesthetic + Functional</div></div>
+  <div class="dtbar"><div class="dts" id="dayTabs"></div></div>
+  <div class="sec" id="dayPanel"></div>
 </div>
 
-<!-- TIMER DONE OVERLAY -->
-<div id="done-overlay">
-  <div class="done-emoji">💪</div>
-  <div class="done-title">REST SELESAI!</div>
-  <div class="done-sub">Waktunya lanjut set berikutnya</div>
-  <button class="btn btn-primary" style="margin-top:8px;padding:14px 32px" onclick="dismissDone()">OK, Lanjut!</button>
+<!-- ═══ HARI INI ═══ -->
+<div class="screen" id="s-hari">
+  <div class="ph">
+    <div class="pt" id="hariTitle">HARI INI</div>
+    <div class="ps" id="hariSub">—</div>
+  </div>
+  <!-- Streak -->
+  <div class="streak-wrap">
+    <div class="streak-fire">🔥</div>
+    <div>
+      <div class="streak-num" id="streakNum">0</div>
+      <div class="streak-label">Hari berturut-turut latihan</div>
+      <div class="streak-best" id="streakBest">Rekor terbaik: 0 hari</div>
+    </div>
+  </div>
+  <!-- Progress -->
+  <div class="pw">
+    <div class="pb-top">
+      <span style="font-size:13px;color:var(--muted)">Progress hari ini</span>
+      <span style="font-size:13px;font-weight:600" id="progCount">0/0</span>
+    </div>
+    <div class="pb-bg"><div class="pb-fill" id="progBar" style="width:0%"></div></div>
+  </div>
+  <div class="sec">
+    <div class="card" id="checkList"></div>
+  </div>
+  <div class="sec" style="padding-top:0">
+    <button class="btn btn-o btn-f" onclick="resetChecklist()" style="font-size:12px;padding:10px">↺ Reset Checklist</button>
+  </div>
 </div>
 
+<!-- ═══ TIMER ═══ -->
+<div class="screen" id="s-timer">
+  <div class="ph"><div class="pt">REST TIMER</div><div class="ps">Istirahat antar set</div></div>
+  <div class="twrap">
+    <div class="tsvgw">
+      <svg class="tsvg" width="200" height="200" viewBox="0 0 200 200">
+        <circle cx="100" cy="100" r="88" fill="none" stroke="#1E1E2E" stroke-width="8"/>
+        <circle id="tArc" cx="100" cy="100" r="88" fill="none" stroke="#FF6B35"
+          stroke-width="8" stroke-dasharray="553" stroke-dashoffset="0" stroke-linecap="round"/>
+      </svg>
+      <div class="ttext">
+        <div class="tdisp" id="tDisp">01:30</div>
+        <div class="tstat" id="tStat">Siap</div>
+      </div>
+    </div>
+    <div class="presets" id="presets">
+      <button class="pre" data-sec="30">30d</button>
+      <button class="pre" data-sec="60">1m</button>
+      <button class="pre sel" data-sec="90">1m 30d</button>
+      <button class="pre" data-sec="120">2m</button>
+      <button class="pre" data-sec="180">3m</button>
+    </div>
+    <div class="crow">
+      <input type="number" id="cSec" placeholder="Custom (detik)..." min="1" max="3600">
+      <button class="btn btn-o" onclick="setCustom()">Set</button>
+    </div>
+    <div class="tbtns">
+      <button class="btn btn-o" onclick="resetTimer()">Reset</button>
+      <button class="btn btn-p" id="btnStart" onclick="toggleTimer()">Mulai</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ LOG & PROGRES ═══ -->
+<div class="screen" id="s-log">
+  <div class="ph"><div class="pt">LOG & PROGRES</div><div class="ps">Catat & lacak perkembangan</div></div>
+  <div class="tab-switch">
+    <button class="tsw on" id="tabLog" onclick="switchLogTab('log')">📋 Log</button>
+    <button class="tsw" id="tabPR" onclick="switchLogTab('pr')">🏆 PR</button>
+    <button class="tsw" id="tabChart" onclick="switchLogTab('chart')">📈 Grafik</button>
+  </div>
+
+  <!-- LOG TAB -->
+  <div id="lTab">
+    <div class="lform">
+      <div class="fg">
+        <div class="flabel">Nama Latihan</div>
+        <input type="text" id="logEx" class="fi" placeholder="Contoh: Bench Press..." list="exList">
+        <datalist id="exList"></datalist>
+      </div>
+      <div class="frow">
+        <div class="fg">
+          <div class="flabel">Set × Rep</div>
+          <input type="text" id="logSR" class="fi" placeholder="4×10">
+        </div>
+        <div class="fg">
+          <div class="flabel">Beban (kg)</div>
+          <input type="number" id="logW" class="fi" placeholder="20" min="0" step="0.5">
+        </div>
+      </div>
+      <div class="fg">
+        <div class="flabel">Catatan (opsional)</div>
+        <input type="text" id="logNote" class="fi" placeholder="Form bagus, nambah 2.5kg...">
+      </div>
+      <button class="btn btn-p btn-f" onclick="addLog()">+ Tambah Log</button>
+    </div>
+    <div id="logList" class="llist"></div>
+  </div>
+
+  <!-- PR TAB -->
+  <div id="prTab" style="display:none">
+    <div class="sec">
+      <div class="label">Personal Record per Latihan</div>
+      <div class="card" id="prList"></div>
+    </div>
+  </div>
+
+  <!-- CHART TAB -->
+  <div id="chartTab" style="display:none">
+    <div class="chart-wrap">
+      <div class="label">Pilih Latihan</div>
+      <select id="chartSelect" class="chart-select" onchange="renderChart()">
+        <option value="">-- Pilih latihan --</option>
+      </select>
+      <div class="chart-box" id="chartBox">
+        <div class="chart-empty">Pilih latihan untuk melihat grafik progress</div>
+      </div>
+      <div style="font-size:11px;color:var(--dim);margin-top:8px;text-align:center">Grafik menampilkan berat (kg) dari waktu ke waktu</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SETTING ═══ -->
+<div class="screen" id="s-setting">
+  <div class="ph"><div class="pt">PENGATURAN</div><div class="ps">Reminder & data</div></div>
+  <div class="sec">
+    <div class="label">Reminder Latihan</div>
+    <div class="card">
+      <div class="sit">
+        <div><div class="slbl">Aktifkan Reminder</div><div class="ssub">Notifikasi harian</div></div>
+        <label class="toggle"><input type="checkbox" id="remToggle" onchange="saveRem()"><span class="tgl"></span></label>
+      </div>
+      <div class="sit">
+        <div><div class="slbl">Jam Pengingat</div></div>
+        <input type="time" id="remTime" class="ti" value="06:00" onchange="saveRem()">
+      </div>
+      <div class="sit" style="flex-direction:column;align-items:flex-start;gap:8px">
+        <div><div class="slbl">Izin Notifikasi</div><div class="ssub">Wajib untuk reminder</div></div>
+        <div id="nBadge" class="nb ndf">⏳ Belum diminta</div>
+        <button class="btn btn-o" id="nBtn" onclick="askNotif()" style="font-size:12px;padding:9px 14px">🔔 Minta Izin</button>
+      </div>
+    </div>
+  </div>
+  <div class="sec" style="padding-top:0">
+    <div class="label">Statistik</div>
+    <div class="card">
+      <div class="sit"><div class="slbl">Total Log</div><div class="stat-num" id="stLog" style="color:var(--push)">0</div></div>
+      <div class="sit"><div class="slbl">PR Tercatat</div><div class="stat-num" id="stPR" style="color:var(--gold)">0</div></div>
+      <div class="sit"><div class="slbl">Streak Saat Ini</div><div class="stat-num" id="stStreak" style="color:var(--pull)">0 hari</div></div>
+      <div class="sit"><div class="slbl">Latihan Selesai Hari Ini</div><div class="stat-num" id="stCheck" style="color:var(--legs)">0/0</div></div>
+    </div>
+  </div>
+  <div class="sec" style="padding-top:0">
+    <div class="label">Data</div>
+    <div class="card">
+      <div class="sit"><button class="btn btn-d btn-f" onclick="clearAll()">🗑️ Hapus Semua Data</button></div>
+    </div>
+  </div>
+  <div class="sec" style="padding-top:0">
+    <div class="label">Install App</div>
+    <div class="card">
+      <div class="sit" style="flex-direction:column;align-items:flex-start;gap:4px">
+        <div style="font-size:13px;color:var(--muted);line-height:1.8">
+          1. Buka di <b style="color:var(--text)">Chrome Android</b><br>
+          2. Tap menu <b style="color:var(--text)">⋮</b> kanan atas<br>
+          3. Tap <b style="color:var(--text)">"Tambahkan ke layar utama"</b><br>
+          4. Tap <b style="color:var(--text)">Tambahkan</b> ✅
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="sec" style="padding-top:0">
+    <div class="card">
+      <div class="sit" style="justify-content:center">
+        <div style="text-align:center">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:var(--dim)">WORKOUT TRACKER v2.0</div>
+          <div style="font-size:12px;color:var(--dim);margin-top:2px">Streak · PR · Grafik · Timer</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <button class="nav-btn active" onclick="goTo('jadwal',this)"><span class="ni">📅</span><span>Jadwal</span></button>
+  <button class="nav-btn" onclick="goTo('hari',this)"><span class="ni">✅</span><span>Hari Ini</span></button>
+  <button class="nav-btn" onclick="goTo('timer',this)"><span class="ni">⏱️</span><span>Timer</span></button>
+  <button class="nav-btn" onclick="goTo('log',this)"><span class="ni">📊</span><span>Log</span></button>
+  <button class="nav-btn" onclick="goTo('setting',this)"><span class="ni">⚙️</span><span>Setting</span></button>
+</nav>
+</div>
+
+<!-- OVERLAYS -->
+<div id="dov">
+  <div class="do-em">💪</div>
+  <div class="do-t">REST SELESAI!</div>
+  <div class="do-s">Waktunya lanjut set berikutnya</div>
+  <button class="btn btn-p" style="margin-top:8px;padding:13px 28px" onclick="dismissDone()">OK, Lanjut!</button>
+</div>
+<div id="prov">
+  <div class="pr-em">🏆</div>
+  <div class="pr-t">PERSONAL RECORD BARU!</div>
+  <div class="pr-s">Rekor baru untuk:</div>
+  <div class="pr-ex" id="prExName">—</div>
+  <div style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--gold);margin-top:4px" id="prNewVal">—</div>
+  <button class="btn btn-g" style="margin-top:8px;padding:13px 28px" onclick="document.getElementById('prov').classList.remove('show')">Mantap! 🔥</button>
+</div>
 <div id="toast"></div>
 
 <script>
-// ═══════════════════════════════════════
+// ══════════════════════════════
 // DATA
-// ═══════════════════════════════════════
-const DAYS = [
-  {
-    day:"Senin",label:"PUSH",tag:"Chest & Shoulder",recovery:"48 jam",color:"#FF6B35",
-    focus:"Tebalin dada & bikin bahu lebar",
-    exercises:[
-      {name:"Bench Press / Weighted Push-up",sets:"4",reps:"8–10"},
-      {name:"Incline Press",sets:"3",reps:"10–12",note:"upper chest"},
-      {name:"Shoulder Press",sets:"4",reps:"8–10"},
-      {name:"Lateral Raise",sets:"3",reps:"12–15",note:"bahu bulat"},
-      {name:"Triceps Dips / Overhead Extension",sets:"3",reps:"10–12"},
-    ],
-    functional:"Farmer's Carry → 3×20–30m"
-  },
-  {
-    day:"Selasa",label:"PULL",tag:"Back & Biceps",recovery:"48–72 jam",color:"#00D4AA",
-    focus:"V-taper & ketebalan punggung",
-    exercises:[
-      {name:"Pull-up",sets:"4",reps:"max",note:"normal / chin-up"},
-      {name:"Barbell Row / One-arm Row",sets:"4",reps:"8–10"},
-      {name:"Lat Pulldown (band/galon)",sets:"3",reps:"10–12"},
-      {name:"Face Pull (band)",sets:"3",reps:"12–15",note:"rear delts"},
-      {name:"Barbell Curl",sets:"3",reps:"10–12"},
-      {name:"Hammer Curl",sets:"3",reps:"10–12"},
-      {name:"Latihan Leher",sets:"—",reps:"—"},
-    ],
-    functional:"Dead Hang → 3×max hold"
-  },
-  {
-    day:"Rabu",label:"LEGS",tag:"Quads, Hamstring & Calves",recovery:"72 jam",color:"#A855F7",
-    focus:"Fondasi kuat + betis proporsional",
-    exercises:[
-      {name:"Squat",sets:"4",reps:"8–10"},
-      {name:"Bulgarian Split Squat",sets:"3",reps:"10–12",note:"per kaki"},
-      {name:"Romanian Deadlift (RDL)",sets:"4",reps:"8–10"},
-      {name:"Standing Calf Raise",sets:"5",reps:"15–20"},
-      {name:"Seated Calf Raise",sets:"3",reps:"20",note:"beban di paha"},
-    ],
-    functional:"Suitcase Carry → 3×20–30m"
-  },
-  {
-    day:"Kamis",label:"PUSH",tag:"Chest & Shoulder Aesthetic",recovery:"48 jam",color:"#FF6B35",
-    focus:"Upper chest & bahu bulat",
-    exercises:[
-      {name:"Incline Press",sets:"4",reps:"8–10"},
-      {name:"Dumbbell Fly / Wide Push-up",sets:"3",reps:"12–15",note:"shape"},
-      {name:"Arnold Press",sets:"4",reps:"8–10"},
-      {name:"Lateral Raise (drop set)",sets:"4",reps:"12–15"},
-      {name:"Skullcrusher / Diamond Push-up",sets:"3",reps:"12"},
-      {name:"Beban di Tengah Dada",sets:"3",reps:"12"},
-    ],
-    functional:"Rice Bucket / Hand Gripper → 3–4 set"
-  },
-  {
-    day:"Jumat",label:"PULL",tag:"Back & Arms Heavy",recovery:"48–72 jam",color:"#00D4AA",
-    focus:"Power & ketebalan back-biceps",
-    exercises:[
-      {name:"Pull-up (wide grip)",sets:"4",reps:"max"},
-      {name:"Deadlift",sets:"4",reps:"5",note:"jika alat ada"},
-      {name:"Row (barbell/galon)",sets:"4",reps:"8–10"},
-      {name:"Shrugs",sets:"3",reps:"12–15",note:"trap"},
-      {name:"Concentration Curl",sets:"3",reps:"10–12"},
-      {name:"Preacher Curl (improvisasi)",sets:"3",reps:"12"},
-      {name:"Latihan Leher",sets:"—",reps:"—"},
-    ],
-    functional:"Towel Pull-up / Hang → 3×max hold"
-  },
-  {
-    day:"Sabtu",label:"LEGS",tag:"Legs + Core",recovery:"72 jam",color:"#A855F7",
-    focus:"Kaki balance + core aesthetic",
-    exercises:[
-      {name:"Squat",sets:"4",reps:"8–10"},
-      {name:"Hip Thrust / Glute Bridge",sets:"3",reps:"12–15"},
-      {name:"Walking Lunge",sets:"3",reps:"12",note:"per kaki"},
-      {name:"Standing Calf Raise",sets:"5",reps:"20"},
-      {name:"Hanging / Lying Leg Raise",sets:"4",reps:"15"},
-      {name:"Plank",sets:"3",reps:"60 detik"},
-    ],
-    functional:"Pinch Grip Hold → 3×max hold"
-  },
-  {
-    day:"Minggu",label:"REST",tag:"Active Recovery",recovery:null,color:"#64748B",
-    focus:"Pemulihan otot & sendi",
-    exercises:[
-      {name:"Jalan santai",sets:"—",reps:"—"},
-      {name:"Stretching",sets:"—",reps:"—"},
-      {name:"Wrist mobility",sets:"—",reps:"—"},
-      {name:"Yoga ringan",sets:"—",reps:"—"},
-    ],
-    functional:null
-  },
+// ══════════════════════════════
+const DAYS=[
+  {day:"Senin",label:"PUSH",tag:"Chest & Shoulder",recovery:"48 jam",color:"#FF6B35",
+   focus:"Tebalin dada & bikin bahu lebar",
+   exercises:[
+    {name:"Bench Press / Weighted Push-up",sets:"4",reps:"8–10"},
+    {name:"Incline Press",sets:"3",reps:"10–12",note:"upper chest"},
+    {name:"Shoulder Press",sets:"4",reps:"8–10"},
+    {name:"Lateral Raise",sets:"3",reps:"12–15",note:"bahu bulat"},
+    {name:"Triceps Dips / Overhead Extension",sets:"3",reps:"10–12"},
+   ],functional:"Farmer's Carry → 3×20–30m"},
+  {day:"Selasa",label:"PULL",tag:"Back & Biceps",recovery:"48–72 jam",color:"#00D4AA",
+   focus:"V-taper & ketebalan punggung",
+   exercises:[
+    {name:"Pull-up",sets:"4",reps:"max",note:"normal / chin-up"},
+    {name:"Barbell Row / One-arm Row",sets:"4",reps:"8–10"},
+    {name:"Lat Pulldown (band/galon)",sets:"3",reps:"10–12"},
+    {name:"Face Pull (band)",sets:"3",reps:"12–15",note:"rear delts"},
+    {name:"Barbell Curl",sets:"3",reps:"10–12"},
+    {name:"Hammer Curl",sets:"3",reps:"10–12"},
+    {name:"Latihan Leher",sets:"—",reps:"—"},
+   ],functional:"Dead Hang → 3×max hold"},
+  {day:"Rabu",label:"LEGS",tag:"Quads, Hamstring & Calves",recovery:"72 jam",color:"#A855F7",
+   focus:"Fondasi kuat + betis proporsional",
+   exercises:[
+    {name:"Squat",sets:"4",reps:"8–10"},
+    {name:"Bulgarian Split Squat",sets:"3",reps:"10–12",note:"per kaki"},
+    {name:"Romanian Deadlift (RDL)",sets:"4",reps:"8–10"},
+    {name:"Standing Calf Raise",sets:"5",reps:"15–20"},
+    {name:"Seated Calf Raise",sets:"3",reps:"20",note:"beban di paha"},
+   ],functional:"Suitcase Carry → 3×20–30m"},
+  {day:"Kamis",label:"PUSH",tag:"Chest & Shoulder Aesthetic",recovery:"48 jam",color:"#FF6B35",
+   focus:"Upper chest & bahu bulat",
+   exercises:[
+    {name:"Incline Press",sets:"4",reps:"8–10"},
+    {name:"Dumbbell Fly / Wide Push-up",sets:"3",reps:"12–15",note:"shape"},
+    {name:"Arnold Press",sets:"4",reps:"8–10"},
+    {name:"Lateral Raise (drop set)",sets:"4",reps:"12–15"},
+    {name:"Skullcrusher / Diamond Push-up",sets:"3",reps:"12"},
+    {name:"Beban di Tengah Dada",sets:"3",reps:"12"},
+   ],functional:"Rice Bucket / Hand Gripper → 3–4 set"},
+  {day:"Jumat",label:"PULL",tag:"Back & Arms Heavy",recovery:"48–72 jam",color:"#00D4AA",
+   focus:"Power & ketebalan back-biceps",
+   exercises:[
+    {name:"Pull-up (wide grip)",sets:"4",reps:"max"},
+    {name:"Deadlift",sets:"4",reps:"5",note:"jika alat ada"},
+    {name:"Row (barbell/galon)",sets:"4",reps:"8–10"},
+    {name:"Shrugs",sets:"3",reps:"12–15",note:"trap"},
+    {name:"Concentration Curl",sets:"3",reps:"10–12"},
+    {name:"Preacher Curl (improvisasi)",sets:"3",reps:"12"},
+    {name:"Latihan Leher",sets:"—",reps:"—"},
+   ],functional:"Towel Pull-up / Hang → 3×max hold"},
+  {day:"Sabtu",label:"LEGS",tag:"Legs + Core",recovery:"72 jam",color:"#A855F7",
+   focus:"Kaki balance + core aesthetic",
+   exercises:[
+    {name:"Squat",sets:"4",reps:"8–10"},
+    {name:"Hip Thrust / Glute Bridge",sets:"3",reps:"12–15"},
+    {name:"Walking Lunge",sets:"3",reps:"12",note:"per kaki"},
+    {name:"Standing Calf Raise",sets:"5",reps:"20"},
+    {name:"Hanging / Lying Leg Raise",sets:"4",reps:"15"},
+    {name:"Plank",sets:"3",reps:"60 detik"},
+   ],functional:"Pinch Grip Hold → 3×max hold"},
+  {day:"Minggu",label:"REST",tag:"Active Recovery",recovery:null,color:"#64748B",
+   focus:"Pemulihan otot & sendi",
+   exercises:[
+    {name:"Jalan santai",sets:"—",reps:"—"},
+    {name:"Stretching",sets:"—",reps:"—"},
+    {name:"Wrist mobility",sets:"—",reps:"—"},
+    {name:"Yoga ringan",sets:"—",reps:"—"},
+   ],functional:null},
 ];
 
-// ═══════════════════════════════════════
+// ══════════════════════════════
+// STORAGE HELPERS
+// ══════════════════════════════
+const get=(k,def)=>{try{const v=localStorage.getItem(k);return v!==null?JSON.parse(v):def}catch{return def}};
+const set=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+
+// ══════════════════════════════
 // NAV
-// ═══════════════════════════════════════
-function goTo(id, btn) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+// ══════════════════════════════
+function goTo(id,btn){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('s-'+id).classList.add('active');
   btn.classList.add('active');
-  if (id==='hari') renderChecklist();
-  if (id==='log') renderLog();
-  if (id==='setting') renderSetting();
+  if(id==='hari') renderHari();
+  if(id==='log'){renderLog();renderPR();populateChartSelect();}
+  if(id==='setting') renderSetting();
 }
 
-// ═══════════════════════════════════════
+// ══════════════════════════════
 // JADWAL
-// ═══════════════════════════════════════
-let activeDay = 0;
-function initJadwal() {
-  const tabs = document.getElementById('dayTabs');
-  DAYS.forEach((d,i) => {
-    const btn = document.createElement('button');
-    btn.className = 'day-tab';
-    btn.textContent = d.day;
-    if (i===0) { btn.style.borderColor=d.color; btn.style.color=d.color; btn.style.background=d.color+'22'; }
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.day-tab').forEach(b => {
-        b.style.borderColor='#1E1E2E'; b.style.color='#777'; b.style.background='';
-      });
-      btn.style.borderColor=d.color; btn.style.color=d.color; btn.style.background=d.color+'22';
-      activeDay=i; renderDayPanel();
+// ══════════════════════════════
+let activeDay=0;
+function initJadwal(){
+  const tabs=document.getElementById('dayTabs');
+  DAYS.forEach((d,i)=>{
+    const btn=document.createElement('button');
+    btn.className='dt';
+    btn.textContent=d.day;
+    if(i===0){btn.style.borderColor=d.color;btn.style.color=d.color;btn.style.background=d.color+'22';}
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('.dt').forEach(b=>{b.style.borderColor='#1E1E2E';b.style.color='#777';b.style.background='';});
+      btn.style.borderColor=d.color;btn.style.color=d.color;btn.style.background=d.color+'22';
+      activeDay=i;renderDay();
     });
     tabs.appendChild(btn);
   });
-  renderDayPanel();
+  renderDay();
 }
-
-function renderDayPanel() {
-  const d = DAYS[activeDay];
-  const recHTML = d.recovery
-    ? `<div class="rec-box"><div class="rec-label">Recovery</div><div class="rec-val" style="color:${d.color}">${d.recovery}</div></div>`
-    : '';
-  const rows = d.exercises.map(ex =>
-    `<div class="ex-row">
-      <div class="ex-name">${ex.name}${ex.note?`<span class="ex-badge" style="background:${d.color}22;color:${d.color}">${ex.note}</span>`:''}</div>
-      <div class="ex-sets${ex.sets==='—'?' empty':''}">${ex.sets}</div>
-      <div class="ex-reps${ex.reps==='—'?' empty':''}" style="color:${ex.reps==='—'?'':d.color}">${ex.reps}</div>
-    </div>`).join('');
-  const fin = d.functional
-    ? `<div class="finisher-card" style="background:${d.color}15;border-color:${d.color}44">
-        <div><div class="finisher-label" style="color:${d.color}">🔗 Grip Functional Finisher</div>
-        <div class="finisher-text">${d.functional}</div></div>
-      </div>` : '';
-  document.getElementById('dayPanel').innerHTML = `
-    <div class="day-card" style="background:${d.color}18;border-color:${d.color}44">
-      <div class="day-card-top">
-        <div>
-          <div class="day-name-sub" style="color:${d.color}">${d.day}</div>
-          <div class="day-name-main">${d.label}</div>
-          <div class="day-name-tag">${d.tag}</div>
-        </div>${recHTML}
-      </div>
-      <div class="day-focus" style="border-top:1px solid ${d.color}33">
-        <b style="color:${d.color}">Fokus:</b>${d.focus}
-      </div>
+function renderDay(){
+  const d=DAYS[activeDay];
+  const rec=d.recovery?`<div class="rb"><div class="rl">Recovery</div><div class="rv" style="color:${d.color}">${d.recovery}</div></div>`:'';
+  const rows=d.exercises.map(ex=>`<div class="exr">
+    <div class="exn">${ex.name}${ex.note?`<span class="exb" style="background:${d.color}22;color:${d.color}">${ex.note}</span>`:''}</div>
+    <div class="exs${ex.sets==='—'?' e':''}">${ex.sets}</div>
+    <div class="exrp${ex.reps==='—'?' e':''}" style="color:${ex.reps==='—'?'':d.color}">${ex.reps}</div>
+  </div>`).join('');
+  const fin=d.functional?`<div class="fin" style="background:${d.color}15;border-color:${d.color}44">
+    <div><div class="fl" style="color:${d.color}">🔗 Grip Functional Finisher</div><div class="ft">${d.functional}</div></div>
+  </div>`:'';
+  document.getElementById('dayPanel').innerHTML=`
+    <div class="dcard" style="background:${d.color}18;border-color:${d.color}44">
+      <div class="dctop"><div>
+        <div class="dns" style="color:${d.color}">${d.day}</div>
+        <div class="dnm">${d.label}</div>
+        <div class="dnt">${d.tag}</div>
+      </div>${rec}</div>
+      <div class="df" style="border-top:1px solid ${d.color}33"><b style="color:${d.color}">Fokus:</b>${d.focus}</div>
     </div>
-    <div class="ex-table">
-      <div class="ex-thead"><span>Latihan</span><span>Set</span><span>Rep</span></div>
-      ${rows}
-    </div>${fin}`;
+    <div class="ext"><div class="exh"><span>Latihan</span><span>Set</span><span>Rep</span></div>${rows}</div>${fin}`;
 }
 
-// ═══════════════════════════════════════
+// ══════════════════════════════
+// STREAK
+// ══════════════════════════════
+function todayStr(){return new Date().toISOString().slice(0,10)}
+function markTrained(){
+  // mark today as trained if at least 1 exercise done
+  const c=get('wt_ck_'+todayStr(),{});
+  const d=DAYS[todayIdx()];
+  const anyDone=d.exercises.some((_,k)=>c[k]);
+  if(anyDone) set('wt_tr_'+todayStr(),1);
+}
+function calcStreak(){
+  let streak=0,best=get('wt_best_streak',0);
+  const today=new Date();
+  for(let i=0;i<365;i++){
+    const d=new Date(today);d.setDate(d.getDate()-i);
+    const key='wt_tr_'+d.toISOString().slice(0,10);
+    // skip rest day (Minggu = index 6)
+    const dayOfWeek=[6,0,1,2,3,4,5][d.getDay()];
+    if(dayOfWeek===6){continue;} // skip Sunday from streak calc
+    if(get(key,0)){streak++;}
+    else if(i>0){break;}
+  }
+  if(streak>best){best=streak;set('wt_best_streak',best);}
+  return{streak,best};
+}
+
+// ══════════════════════════════
 // HARI INI
-// ═══════════════════════════════════════
-function todayKey() { return 'wt_ck_'+new Date().toISOString().slice(0,10); }
-function todayIdx() {
-  const map=[6,0,1,2,3,4,5]; return map[new Date().getDay()];
-}
-function getChecks() { try{return JSON.parse(localStorage.getItem(todayKey())||'{}')}catch{return{}} }
-function saveChecks(c) { localStorage.setItem(todayKey(),JSON.stringify(c)); }
-
-function renderChecklist() {
-  const i = todayIdx();
-  const d = DAYS[i];
-  const c = getChecks();
-  document.getElementById('hariTitle').textContent = d.day.toUpperCase()+' – '+d.label;
-  document.getElementById('hariSub').textContent = d.tag;
-  const done = d.exercises.filter((_,k)=>c[k]).length;
-  const tot = d.exercises.length;
-  document.getElementById('progCount').textContent = done+'/'+tot;
-  document.getElementById('progBar').style.width = (tot?Math.round(done/tot*100):0)+'%';
-  document.getElementById('progBar').style.background = d.color;
-  document.getElementById('checkList').innerHTML = d.exercises.map((ex,k)=>`
-    <div class="check-item${c[k]?' done':''}" onclick="toggleCheck(${k})">
-      <div class="check-box" style="${c[k]?'background:'+d.color+';border-color:'+d.color:'border-color:'+d.color+'77'}">
-        ${c[k]?'✓':''}
-      </div>
-      <div class="check-info">
-        <div class="ex-name">${ex.name}</div>
-        <div class="check-sets">${ex.sets!=='—'?ex.sets+' set × '+ex.reps:'—'}</div>
+// ══════════════════════════════
+function todayIdx(){return[6,0,1,2,3,4,5][new Date().getDay()]}
+function getChecks(){return get('wt_ck_'+todayStr(),{})}
+function saveChecks(c){set('wt_ck_'+todayStr(),c);}
+function renderHari(){
+  const i=todayIdx(),d=DAYS[i],c=getChecks();
+  document.getElementById('hariTitle').textContent=d.day.toUpperCase()+' – '+d.label;
+  document.getElementById('hariSub').textContent=d.tag;
+  const done=d.exercises.filter((_,k)=>c[k]).length,tot=d.exercises.length;
+  document.getElementById('progCount').textContent=done+'/'+tot;
+  document.getElementById('progBar').style.width=(tot?Math.round(done/tot*100):0)+'%';
+  document.getElementById('progBar').style.background=d.color;
+  // Streak
+  const {streak,best}=calcStreak();
+  document.getElementById('streakNum').textContent=streak;
+  document.getElementById('streakBest').textContent='Rekor terbaik: '+best+' hari';
+  // Checklist
+  document.getElementById('checkList').innerHTML=d.exercises.map((ex,k)=>`
+    <div class="ci${c[k]?' done':''}" onclick="toggleCheck(${k})">
+      <div class="cbox" style="${c[k]?'background:'+d.color+';border-color:'+d.color:'border-color:'+d.color+'77'}">${c[k]?'✓':''}</div>
+      <div class="cinfo">
+        <div class="exn">${ex.name}</div>
+        <div class="csets">${ex.sets!=='—'?ex.sets+' set × '+ex.reps:'—'}</div>
       </div>
     </div>`).join('');
 }
-
-function toggleCheck(k) {
-  const c = getChecks();
-  c[k] = !c[k];
-  saveChecks(c);
-  renderChecklist();
-  const d = DAYS[todayIdx()];
-  if(Object.values(c).filter(Boolean).length===d.exercises.length)
+function toggleCheck(k){
+  const c=getChecks();c[k]=!c[k];saveChecks(c);
+  markTrained();renderHari();
+  const d=DAYS[todayIdx()];
+  if(d.exercises.filter((_,j)=>c[j]).length===d.exercises.length)
     setTimeout(()=>toast('🎉 Semua latihan selesai! Luar biasa!'),200);
 }
-
-function resetChecklist() {
-  if(!confirm('Reset checklist hari ini?')) return;
-  localStorage.removeItem(todayKey());
-  renderChecklist();
-  toast('↺ Checklist direset');
+function resetChecklist(){
+  if(!confirm('Reset checklist hari ini?'))return;
+  localStorage.removeItem('wt_ck_'+todayStr());
+  renderHari();toast('↺ Checklist direset');
 }
 
-// ═══════════════════════════════════════
+// ══════════════════════════════
 // TIMER
-// ═══════════════════════════════════════
-const ARC = 2*Math.PI*95; // ~597
-let tSec=90, tTotal=90, tRunning=false, tInterval=null;
-
-function initTimer() {
-  document.querySelectorAll('.preset-btn').forEach(btn=>{
+// ══════════════════════════════
+const ARC=2*Math.PI*88;
+let tSec=90,tTotal=90,tRun=false,tInt=null;
+function initTimer(){
+  document.querySelectorAll('.pre').forEach(btn=>{
     btn.addEventListener('click',()=>{
-      document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('selected'));
-      btn.classList.add('selected');
-      setTimer(parseInt(btn.dataset.sec));
+      document.querySelectorAll('.pre').forEach(b=>b.classList.remove('sel'));
+      btn.classList.add('sel');setTimer(+btn.dataset.sec);
     });
   });
   setTimer(90);
 }
-
-function setTimer(sec) {
-  clearInterval(tInterval); tRunning=false;
-  tSec=sec; tTotal=sec;
-  document.getElementById('btnStart').textContent='Mulai';
-  document.getElementById('timerStat').textContent='Siap';
-  updateTimerDisp();
+function setTimer(s){clearInterval(tInt);tRun=false;tSec=s;tTotal=s;document.getElementById('btnStart').textContent='Mulai';document.getElementById('tStat').textContent='Siap';updTimer();}
+function setCustom(){const v=+document.getElementById('cSec').value;if(!v||v<1){toast('⚠️ Masukkan durasi valid');return;}document.querySelectorAll('.pre').forEach(b=>b.classList.remove('sel'));setTimer(v);document.getElementById('cSec').value='';}
+function toggleTimer(){
+  if(tRun){clearInterval(tInt);tRun=false;document.getElementById('btnStart').textContent='Lanjut';document.getElementById('tStat').textContent='Dijeda';}
+  else{if(tSec<=0){setTimer(tTotal);return;}tRun=true;document.getElementById('btnStart').textContent='Jeda';document.getElementById('tStat').textContent='Berjalan...';tInt=setInterval(tick,1000);}
 }
-
-function setCustom() {
-  const v=parseInt(document.getElementById('customSec').value);
-  if(!v||v<1){toast('⚠️ Masukkan durasi valid');return;}
-  document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('selected'));
-  setTimer(v); document.getElementById('customSec').value='';
-}
-
-function toggleTimer() {
-  if(tRunning){
-    clearInterval(tInterval); tRunning=false;
-    document.getElementById('btnStart').textContent='Lanjut';
-    document.getElementById('timerStat').textContent='Dijeda';
-  } else {
-    if(tSec<=0){setTimer(tTotal);return;}
-    tRunning=true;
-    document.getElementById('btnStart').textContent='Jeda';
-    document.getElementById('timerStat').textContent='Berjalan...';
-    tInterval=setInterval(tick,1000);
-  }
-}
-
-function tick() {
-  tSec--;
-  if(tSec<=0){
-    tSec=0; clearInterval(tInterval); tRunning=false;
-    document.getElementById('btnStart').textContent='Mulai Lagi';
-    document.getElementById('timerStat').textContent='Selesai! 💪';
-    updateTimerDisp(); timerDone(); return;
-  }
-  updateTimerDisp();
-}
-
-function resetTimer() {
-  clearInterval(tInterval); tRunning=false; tSec=tTotal;
-  document.getElementById('btnStart').textContent='Mulai';
-  document.getElementById('timerStat').textContent='Siap';
-  updateTimerDisp();
-}
-
-function updateTimerDisp() {
-  const m=Math.floor(tSec/60), s=tSec%60;
-  document.getElementById('timerDisp').textContent=
-    String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+function tick(){tSec--;if(tSec<=0){tSec=0;clearInterval(tInt);tRun=false;document.getElementById('btnStart').textContent='Mulai Lagi';document.getElementById('tStat').textContent='Selesai! 💪';updTimer();timerDone();return;}updTimer();}
+function resetTimer(){clearInterval(tInt);tRun=false;tSec=tTotal;document.getElementById('btnStart').textContent='Mulai';document.getElementById('tStat').textContent='Siap';updTimer();}
+function updTimer(){
+  const m=Math.floor(tSec/60),s=tSec%60;
+  document.getElementById('tDisp').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
   const ratio=tTotal>0?tSec/tTotal:0;
-  document.getElementById('timerArc').setAttribute('stroke-dashoffset',ARC*(1-ratio));
-  const col=tSec<=10?'#EF4444':tSec<=30?'#F59E0B':'#FF6B35';
-  document.getElementById('timerArc').setAttribute('stroke',col);
+  document.getElementById('tArc').setAttribute('stroke-dashoffset',ARC*(1-ratio));
+  document.getElementById('tArc').setAttribute('stroke',tSec<=10?'#EF4444':tSec<=30?'#F59E0B':'#FF6B35');
 }
+function timerDone(){beep();if(navigator.vibrate)navigator.vibrate([300,100,300]);document.getElementById('dov').classList.add('show');}
+function dismissDone(){document.getElementById('dov').classList.remove('show');setTimer(tTotal);document.querySelectorAll('.pre').forEach(b=>{if(+b.dataset.sec===tTotal)b.classList.add('sel');else b.classList.remove('sel');});}
+function beep(){try{const ctx=new(window.AudioContext||window.webkitAudioContext)();[0,.3,.6].forEach(t=>{const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.value=880;o.type='sine';g.gain.setValueAtTime(.4,ctx.currentTime+t);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+t+.25);o.start(ctx.currentTime+t);o.stop(ctx.currentTime+t+.3);});}catch(e){}}
 
-function timerDone() {
-  beep();
-  if(navigator.vibrate) navigator.vibrate([300,100,300]);
-  document.getElementById('done-overlay').classList.add('show');
-}
-function dismissDone() {
-  document.getElementById('done-overlay').classList.remove('show');
-  setTimer(tTotal);
-  document.querySelectorAll('.preset-btn').forEach(b=>{
-    if(parseInt(b.dataset.sec)===tTotal) b.classList.add('selected');
-    else b.classList.remove('selected');
-  });
-}
-
-function beep() {
-  try {
-    const ctx=new(window.AudioContext||window.webkitAudioContext)();
-    [0,.3,.6].forEach(t=>{
-      const o=ctx.createOscillator(), g=ctx.createGain();
-      o.connect(g); g.connect(ctx.destination);
-      o.frequency.value=880; o.type='sine';
-      g.gain.setValueAtTime(.4,ctx.currentTime+t);
-      g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+t+.25);
-      o.start(ctx.currentTime+t); o.stop(ctx.currentTime+t+.3);
-    });
-  } catch(e){}
-}
-
-// ═══════════════════════════════════════
+// ══════════════════════════════
 // LOG
-// ═══════════════════════════════════════
-function getLogs(){try{return JSON.parse(localStorage.getItem('wt_logs')||'[]')}catch{return[]}}
-function saveLogs(l){localStorage.setItem('wt_logs',JSON.stringify(l))}
+// ══════════════════════════════
+function getLogs(){return get('wt_logs',[])}
+function saveLogs(l){set('wt_logs',l);}
+function getPRs(){return get('wt_prs',{})}
+function savePRs(p){set('wt_prs',p);}
 
-function addLog() {
+function addLog(){
   const name=document.getElementById('logEx').value.trim();
   const sr=document.getElementById('logSR').value.trim();
-  const w=document.getElementById('logW').value.trim();
+  const w=parseFloat(document.getElementById('logW').value)||0;
+  const note=document.getElementById('logNote').value.trim();
   if(!name){toast('⚠️ Nama latihan wajib diisi');return;}
+  // PR check
+  let isPR=false;
+  if(w>0){
+    const prs=getPRs();
+    if(!prs[name]||w>prs[name].w){
+      const old=prs[name]?prs[name].w:null;
+      prs[name]={w,date:todayStr()};
+      savePRs(prs);isPR=true;
+      setTimeout(()=>showPR(name,w,old),400);
+    }
+  }
   const logs=getLogs();
-  logs.unshift({id:Date.now(),date:new Date().toISOString().slice(0,10),name,sr,w});
+  logs.unshift({id:Date.now(),date:todayStr(),name,sr,w:w||null,note,isPR});
   saveLogs(logs);
-  ['logEx','logSR','logW'].forEach(id=>document.getElementById(id).value='');
-  renderLog(); toast('✅ Log ditambahkan!');
+  ['logEx','logSR','logW','logNote'].forEach(id=>document.getElementById(id).value='');
+  renderLog();if(!isPR)toast('✅ Log ditambahkan!');
 }
 
-function deleteLog(id) {
+function showPR(name,w,old){
+  document.getElementById('prExName').textContent=name;
+  document.getElementById('prNewVal').textContent=w+'kg'+(old?' (+'+Math.round((w-old)*10)/10+'kg)':'');
+  document.getElementById('prov').classList.add('show');
+  if(navigator.vibrate)navigator.vibrate([100,50,100,50,300]);
+}
+
+function deleteLog(id){
   saveLogs(getLogs().filter(l=>l.id!==id));
-  renderLog(); toast('🗑️ Log dihapus');
+  renderLog();renderPR();populateChartSelect();toast('🗑️ Log dihapus');
 }
 
-function renderLog() {
+function renderLog(){
   const logs=getLogs();
   const el=document.getElementById('logList');
-  if(!logs.length){
-    el.innerHTML='<div class="log-empty">Belum ada log.<br>Mulai catat latihan pertamamu! 💪</div>';
-    return;
-  }
+  // Populate datalist
+  const names=[...new Set(logs.map(l=>l.name))];
+  document.getElementById('exList').innerHTML=names.map(n=>`<option value="${n}">`).join('');
+  if(!logs.length){el.innerHTML='<div class="lempty">Belum ada log.<br>Mulai catat latihanmu! 💪</div>';return;}
   const grouped={};
   logs.forEach(l=>{if(!grouped[l.date])grouped[l.date]=[];grouped[l.date].push(l);});
   el.innerHTML=Object.entries(grouped).map(([date,entries])=>{
-    const label=new Date(date+'T12:00:00').toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-    const rows=entries.map(e=>`
-      <div class="log-entry">
-        <div style="flex:1">
-          <div class="log-entry-name">${e.name}</div>
-          <div class="log-entry-detail">${e.sr?'<b>'+e.sr+'</b>':''}${e.w?' · '+e.w:''}</div>
-        </div>
-        <button class="log-entry-del" onclick="deleteLog(${e.id})">✕</button>
-      </div>`).join('');
-    return `<div class="log-date-group"><div class="log-date-label">${label}</div>${rows}</div>`;
+    const label=new Date(date+'T12:00:00').toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long'});
+    const rows=entries.map(e=>`<div class="lentry">
+      <div style="flex:1">
+        <div class="lname">${e.name}${e.isPR?'<span class="pr-badge">🏆 PR</span>':''}</div>
+        <div class="ldet">${e.sr?'<b>'+e.sr+'</b>':''} ${e.w?'· '+e.w+'kg':''} ${e.note?'· <i>'+e.note+'</i>':''}</div>
+      </div>
+      <button class="ldel" onclick="deleteLog(${e.id})">✕</button>
+    </div>`).join('');
+    return`<div class="ldg"><div class="ldl">${label}</div>${rows}</div>`;
   }).join('');
 }
 
-function clearAllLogs() {
-  if(!confirm('Hapus semua log? Tidak bisa dibatalkan.'))return;
-  localStorage.removeItem('wt_logs');
-  renderLog(); toast('🗑️ Semua log dihapus');
+function renderPR(){
+  const prs=getPRs();
+  const el=document.getElementById('prList');
+  const entries=Object.entries(prs);
+  if(!entries.length){el.innerHTML='<div class="lempty" style="padding:20px 0">Belum ada PR.<br>Catat beban di log untuk tracking PR! 🏆</div>';return;}
+  entries.sort((a,b)=>a[0].localeCompare(b[0]));
+  el.innerHTML=entries.map(([name,{w,date}])=>{
+    const d=new Date(date+'T12:00:00').toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'});
+    return`<div class="pr-item">
+      <div class="pr-exname">${name}</div>
+      <div class="pr-val"><div class="pr-weight">${w}kg</div><div class="pr-date">${d}</div></div>
+    </div>`;
+  }).join('');
 }
 
-// ═══════════════════════════════════════
-// SETTING & NOTIFIKASI
-// ═══════════════════════════════════════
-function renderSetting() {
-  const on=localStorage.getItem('wt_rem')==='on';
-  const t=localStorage.getItem('wt_rem_t')||'06:00';
-  document.getElementById('remToggle').checked=on;
-  document.getElementById('remTime').value=t;
-  document.getElementById('logCountStat').textContent=getLogs().length;
-  const c=getChecks();
-  const d=DAYS[todayIdx()];
-  document.getElementById('checkCountStat').textContent=
-    d.exercises.filter((_,k)=>c[k]).length+'/'+d.exercises.length;
-  updateNotifBadge();
+// ══════════════════════════════
+// CHART
+// ══════════════════════════════
+function populateChartSelect(){
+  const logs=getLogs();
+  const names=[...new Set(logs.filter(l=>l.w).map(l=>l.name))].sort();
+  const sel=document.getElementById('chartSelect');
+  const cur=sel.value;
+  sel.innerHTML='<option value="">-- Pilih latihan --</option>'+names.map(n=>`<option value="${n}"${n===cur?' selected':''}>${n}</option>`).join('');
+  if(cur) renderChart();
 }
 
-function saveReminder() {
+function renderChart(){
+  const name=document.getElementById('chartSelect').value;
+  const box=document.getElementById('chartBox');
+  if(!name){box.innerHTML='<div class="chart-empty">Pilih latihan untuk melihat grafik</div>';return;}
+  const logs=getLogs().filter(l=>l.name===name&&l.w).reverse();
+  if(logs.length<2){box.innerHTML='<div class="chart-empty">Butuh minimal 2 data untuk grafik</div>';return;}
+  // Build SVG chart
+  const W=box.clientWidth-28||280,H=140;
+  const weights=logs.map(l=>l.w);
+  const dates=logs.map(l=>l.date);
+  const min=Math.min(...weights),max=Math.max(...weights);
+  const range=max-min||1;
+  const pad=14;
+  const xStep=(W-pad*2)/(logs.length-1);
+  const pts=weights.map((w,i)=>{
+    const x=pad+i*xStep;
+    const y=H-pad-(w-min)/range*(H-pad*2);
+    return{x,y,w,d:dates[i]};
+  });
+  const poly=pts.map(p=>`${p.x},${p.y}`).join(' ');
+  const area=`${pts[0].x},${H} `+pts.map(p=>`${p.x},${p.y}`).join(' ')+` ${pts[pts.length-1].x},${H}`;
+  const dots=pts.map((p,i)=>`
+    <circle cx="${p.x}" cy="${p.y}" r="${i===pts.length-1?5:3.5}"
+      fill="${i===pts.length-1?'#FF6B35':'#FF6B3588'}" stroke="#0D0D1A" stroke-width="1.5"/>
+    <text x="${p.x}" y="${p.y-8}" text-anchor="middle" fill="#aaa" font-size="9" font-family="DM Sans">${p.w}kg</text>`).join('');
+  // Y axis labels
+  const yLabels=[min,min+range/2,max].map((v,i)=>{
+    const y=H-pad-(v-min)/range*(H-pad*2);
+    return`<text x="2" y="${y+3}" fill="#555" font-size="9" font-family="DM Sans">${Math.round(v*10)/10}</text>`;
+  }).join('');
+  // X axis labels (first and last)
+  const fmtDate=d=>{const dt=new Date(d+'T12:00:00');return dt.getDate()+'/'+(dt.getMonth()+1);};
+  const xLabels=`
+    <text x="${pts[0].x}" y="${H+1}" text-anchor="middle" fill="#555" font-size="9" font-family="DM Sans">${fmtDate(pts[0].d)}</text>
+    <text x="${pts[pts.length-1].x}" y="${H+1}" text-anchor="middle" fill="#555" font-size="9" font-family="DM Sans">${fmtDate(pts[pts.length-1].d)}</text>`;
+  // Trend
+  const trend=weights[weights.length-1]-weights[0];
+  const trendTxt=trend>0?`+${Math.round(trend*10)/10}kg 📈`:trend<0?`${Math.round(trend*10)/10}kg 📉`:'Stabil ➡️';
+  const trendCol=trend>0?'#22C55E':trend<0?'#EF4444':'#888';
+  box.innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <div style="font-size:12px;color:var(--muted)">${logs.length} sesi dicatat</div>
+      <div style="font-size:13px;font-weight:600;color:${trendCol}">${trendTxt}</div>
+    </div>
+    <svg width="100%" height="${H+10}" viewBox="0 0 ${W} ${H+10}" style="overflow:visible">
+      <defs>
+        <linearGradient id="ag" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#FF6B35" stop-opacity=".3"/>
+          <stop offset="100%" stop-color="#FF6B35" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <polygon points="${area}" fill="url(#ag)"/>
+      <polyline points="${poly}" fill="none" stroke="#FF6B35" stroke-width="2" stroke-linejoin="round"/>
+      ${yLabels}${xLabels}${dots}
+    </svg>`;
+}
+
+function switchLogTab(tab){
+  ['log','pr','chart'].forEach(t=>{
+    document.getElementById(t+'Tab').style.display=t===tab?'block':'none';
+    document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1)).classList.toggle('on',t===tab);
+  });
+  if(tab==='pr') renderPR();
+  if(tab==='chart'){populateChartSelect();renderChart();}
+}
+
+// ══════════════════════════════
+// SETTING
+// ══════════════════════════════
+function renderSetting(){
+  document.getElementById('remToggle').checked=get('wt_rem','off')==='on';
+  document.getElementById('remTime').value=get('wt_rem_t','06:00');
+  document.getElementById('stLog').textContent=getLogs().length;
+  document.getElementById('stPR').textContent=Object.keys(getPRs()).length;
+  const {streak}=calcStreak();
+  document.getElementById('stStreak').textContent=streak+' hari';
+  const c=getChecks(),d=DAYS[todayIdx()];
+  document.getElementById('stCheck').textContent=d.exercises.filter((_,k)=>c[k]).length+'/'+d.exercises.length;
+  updateNBadge();
+}
+function saveRem(){
   const on=document.getElementById('remToggle').checked;
   const t=document.getElementById('remTime').value;
-  localStorage.setItem('wt_rem',on?'on':'off');
-  localStorage.setItem('wt_rem_t',t);
-  if(on&&Notification.permission!=='granted') toast('⚠️ Minta izin notifikasi dulu!');
-  else if(on) toast('⏰ Reminder aktif jam '+t);
+  set('wt_rem',on?'on':'off');set('wt_rem_t',t);
+  if(on&&Notification.permission!=='granted')toast('⚠️ Minta izin notifikasi dulu!');
+  else if(on)toast('⏰ Reminder aktif jam '+t);
 }
-
-async function askNotif() {
-  if(!('Notification' in window)){toast('Browser ini tidak mendukung notifikasi');return;}
+async function askNotif(){
+  if(!('Notification' in window)){toast('Browser tidak mendukung notifikasi');return;}
   const p=await Notification.requestPermission();
-  updateNotifBadge();
-  if(p==='granted') toast('🔔 Izin diberikan! Reminder siap.');
-  else toast('❌ Izin notifikasi ditolak');
+  updateNBadge();
+  if(p==='granted')toast('🔔 Izin diberikan!');else toast('❌ Izin ditolak');
 }
-
-function updateNotifBadge() {
-  const el=document.getElementById('notifBadge');
-  const btn=document.getElementById('notifBtn');
-  if(!('Notification' in window)){
-    el.className='notif-badge notif-denied'; el.textContent='❌ Tidak didukung'; return;
-  }
+function updateNBadge(){
+  const el=document.getElementById('nBadge'),btn=document.getElementById('nBtn');
+  if(!('Notification' in window)){el.className='nb nd';el.textContent='❌ Tidak didukung';return;}
   const p=Notification.permission;
-  if(p==='granted'){
-    el.className='notif-badge notif-granted'; el.textContent='✅ Izin diberikan';
-    btn.style.display='none';
-  } else if(p==='denied'){
-    el.className='notif-badge notif-denied'; el.textContent='❌ Ditolak – buka Setting browser';
-    btn.style.display='none';
-  } else {
-    el.className='notif-badge notif-default'; el.textContent='⏳ Belum diminta';
-    btn.style.display='';
-  }
+  if(p==='granted'){el.className='nb ng';el.textContent='✅ Izin diberikan';btn.style.display='none';}
+  else if(p==='denied'){el.className='nb nd';el.textContent='❌ Ditolak';btn.style.display='none';}
+  else{el.className='nb ndf';el.textContent='⏳ Belum diminta';btn.style.display='';}
+}
+function clearAll(){
+  if(!confirm('Hapus SEMUA data? (Log, PR, Streak, Checklist)\nTidak bisa dibatalkan!'))return;
+  Object.keys(localStorage).filter(k=>k.startsWith('wt_')).forEach(k=>localStorage.removeItem(k));
+  renderHari();renderLog();renderPR();renderSetting();toast('🗑️ Semua data dihapus');
 }
 
-function reminderCheck() {
-  const on=localStorage.getItem('wt_rem')==='on';
-  if(!on||Notification.permission!=='granted') return;
+// ══════════════════════════════
+// REMINDER
+// ══════════════════════════════
+function remCheck(){
+  if(get('wt_rem','off')!=='on'||Notification.permission!=='granted')return;
   const now=new Date();
   const hhmm=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
-  const target=localStorage.getItem('wt_rem_t')||'06:00';
-  const key='wt_sent_'+now.toISOString().slice(0,10)+'_'+target;
-  if(hhmm===target&&!localStorage.getItem(key)){
-    localStorage.setItem(key,'1');
+  const target=get('wt_rem_t','06:00');
+  const key='wt_sent_'+todayStr()+'_'+target;
+  if(hhmm===target&&!get(key,0)){
+    set(key,1);
     const d=DAYS[todayIdx()];
-    new Notification('💪 Waktunya Workout!',{
-      body:'Hari ini: '+d.day+' – '+d.label+' ('+d.tag+')',
-      tag:'workout-reminder'
-    });
+    new Notification('💪 Waktunya Workout!',{body:'Hari ini: '+d.day+' – '+d.label+' ('+d.tag+')',tag:'workout-reminder'});
   }
 }
 
-// ═══════════════════════════════════════
+// ══════════════════════════════
 // TOAST
-// ═══════════════════════════════════════
+// ══════════════════════════════
 let toastT;
-function toast(msg) {
+function toast(msg){
   const el=document.getElementById('toast');
-  el.textContent=msg; el.classList.add('show');
-  clearTimeout(toastT); toastT=setTimeout(()=>el.classList.remove('show'),2500);
+  el.textContent=msg;el.classList.add('show');
+  clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('show'),2800);
 }
 
-// ═══════════════════════════════════════
+// ══════════════════════════════
 // SERVICE WORKER
-// ═══════════════════════════════════════
-if('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js').catch(()=>{});
-}
+// ══════════════════════════════
+if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
 
-// ═══════════════════════════════════════
+// ══════════════════════════════
 // INIT
-// ═══════════════════════════════════════
+// ══════════════════════════════
 initJadwal();
 initTimer();
-renderChecklist();
-setInterval(reminderCheck, 30000);
+renderHari();
+setInterval(remCheck,30000);
 </script>
 </body>
 </html>
