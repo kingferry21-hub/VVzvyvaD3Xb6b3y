@@ -759,10 +759,12 @@ async function renderLatihan() {
 
   // Consistency
   const cons = await calcConsistency();
-  document.getElementById('consPct').textContent = cons.pct+'%';
-  document.getElementById('consPct').style.color = cons.pct>=80?'var(--green)':cons.pct>=50?'var(--gold)':'var(--red)';
+  const consColor = cons.done===0 ? 'var(--dim)' : cons.pct>=80?'var(--green)':cons.pct>=50?'var(--gold)':'var(--red)';
+  const consText = cons.done===0 ? 'Mulai tracking hari ini!' : cons.pct+'%';
+  document.getElementById('consPct').textContent = consText;
+  document.getElementById('consPct').style.color = consColor;
   document.getElementById('consFill').style.width = cons.pct+'%';
-  document.getElementById('consFill').style.background = cons.pct>=80?'var(--green)':cons.pct>=50?'var(--gold)':'var(--red)';
+  document.getElementById('consFill').style.background = consColor;
 
   // Hero
   const rec = d.recovery ? `<div class="rec-pill"><div class="rec-lbl">Recovery</div><div class="rec-val" style="color:${d.color}">${d.recovery}</div></div>` : '';
@@ -1084,19 +1086,29 @@ function showPR(name, w, er, old) {
 // CONSISTENCY
 // ════════════════════════════════
 async function calcConsistency(weeks=4) {
+  const [allSets, allSettings] = await Promise.all([
+    DB.getAll('sets'), DB.getAll('settings')
+  ]);
+  const trainedByDate = {};
+  allSettings.filter(s=>s.key.startsWith('trained_')).forEach(s=>{
+    trainedByDate[s.key.replace('trained_','')] = true;
+  });
+  const setsByDate = {};
+  allSets.forEach(s=>{ setsByDate[s.date] = (setsByDate[s.date]||0)+1; });
+
   const allTrainedDays = [];
   for(let i=0; i<weeks*7; i++) {
     const d=new Date(); d.setDate(d.getDate()-i);
     const ds=d.toISOString().slice(0,10);
-    const dayOfWeek=[6,0,1,2,3,4,5][d.getDay()];
-    if(dayOfWeek===6) continue; // skip rest day
-    const trained = await DB.getSetting('trained_'+ds) ||
-      (await DB.getByIndex('sets','date',ds)).length > 0;
-    allTrainedDays.push({date:ds, trained:!!trained});
+    const isRestDay = [6,0,1,2,3,4,5][d.getDay()] === 6;
+    if(isRestDay) continue;
+    const trained = !!(trainedByDate[ds] || setsByDate[ds]);
+    allTrainedDays.push({date:ds, trained});
   }
   const expected=allTrainedDays.length;
   const done=allTrainedDays.filter(d=>d.trained).length;
-  return {pct:expected>0?Math.round(done/expected*100):0, done, expected, days:allTrainedDays};
+  const pct = expected>0 ? Math.round(done/expected*100) : 0;
+  return {pct, done, expected, days:allTrainedDays};
 }
 
 // ════════════════════════════════
@@ -1147,10 +1159,15 @@ function renderJadwalPanel() {
 // ════════════════════════════════
 let chartType = 'weight';
 
+let currentProgTab = 'kons';
+
 function switchProg(tab) {
+  currentProgTab = tab;
   ['kons','pr','chart','vol'].forEach(t=>{
-    document.getElementById('p'+t.charAt(0).toUpperCase()+t.slice(1)).style.display=t===tab?'block':'none';
-    document.getElementById('tp'+t.charAt(0).toUpperCase()+t.slice(1)).classList.toggle('on',t===tab);
+    const panel = document.getElementById('p'+t.charAt(0).toUpperCase()+t.slice(1));
+    const btn = document.getElementById('tp'+t.charAt(0).toUpperCase()+t.slice(1));
+    if(panel) panel.style.display = t===tab ? 'block' : 'none';
+    if(btn) btn.classList.toggle('on', t===tab);
   });
   if(tab==='kons') renderKons();
   if(tab==='pr') renderPR();
@@ -1158,56 +1175,107 @@ function switchProg(tab) {
   if(tab==='vol') renderVol();
 }
 
-async function renderProgres() { renderKons(); }
+async function renderProgres() {
+  // Ensure correct tab is shown
+  switchProg(currentProgTab);
+}
 
 async function renderKons() {
-  const weeks=[];
-  for(let w=0;w<4;w++) {
-    const days=[];
-    for(let d=0;d<7;d++) {
-      const dt=new Date(); dt.setDate(dt.getDate()-(w*7+d));
-      const ds=dt.toISOString().slice(0,10);
-      const dayIdx=[6,0,1,2,3,4,5][dt.getDay()];
-      if(dayIdx===6){days.push({date:ds,rest:true});continue;}
-      const trained=await DB.getSetting('trained_'+ds)||(await DB.getByIndex('sets','date',ds)).length>0;
-      days.push({date:ds,trained:!!trained,rest:false});
-    }
-    const expected=days.filter(d=>!d.rest).length;
-    const done=days.filter(d=>d.trained).length;
-    weeks.push({days,expected,done,pct:expected>0?Math.round(done/expected*100):0});
-  }
-  const col=p=>p>=80?'var(--green)':p>=50?'var(--gold)':'var(--red)';
-  const wLabels=['Minggu Ini','Minggu Lalu','2M lalu','3M lalu'];
-  document.getElementById('weekGrid').innerHTML=weeks.map((w,i)=>`
-    <div class="week-card">
-      <div class="week-num">${wLabels[i]}</div>
-      <div class="week-pct" style="color:${col(w.pct)}">${w.pct}%</div>
-      <div style="font-size:10px;color:var(--dim)">${w.done}/${w.expected}hr</div>
-      <div class="week-bar-bg"><div class="week-bar-fill" style="width:${w.pct}%;background:${col(w.pct)}"></div></div>
-    </div>`).join('');
+  try {
+    // Batch load: get ALL sets and ALL settings at once (fast)
+    const [allSets, allSettings] = await Promise.all([
+      DB.getAll('sets'),
+      DB.getAll('settings')
+    ]);
 
-  // Calendar dots (last 28 days)
-  const calEl=document.getElementById('calGrid');
-  const dayNames=['S','S','R','K','J','S','M'];
-  let calHTML=dayNames.map(d=>`<div style="text-align:center;font-size:9px;color:var(--dim);padding-bottom:2px">${d}</div>`).join('');
-  const allDays=[];
-  for(let i=27;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);allDays.push(d);}
-  // Align to week
-  const firstDow=allDays[0].getDay(); // 0=Sun
-  for(let p=0;p<firstDow;p++) calHTML+=`<div></div>`;
-  for(const dt of allDays){
-    const ds=dt.toISOString().slice(0,10);
-    const dayIdx=[6,0,1,2,3,4,5][dt.getDay()];
-    const isRest=dayIdx===6;
-    const trained=await DB.getSetting('trained_'+ds)||(await DB.getByIndex('sets','date',ds)).length>0;
-    const isToday=ds===todayStr();
-    calHTML+=`<div style="aspect-ratio:1;border-radius:4px;display:flex;align-items:center;justify-content:center;
-      font-size:9px;border:${isToday?'1px solid var(--push)':'1px solid transparent'};
-      background:${isRest?'var(--border)':trained?'var(--green)':'var(--bg3)'}">
-      ${isRest?'':''}${!isRest&&trained?'✓':''}
-    </div>`;
+    // Build lookup maps for fast access
+    const trainedByDate = {};
+    allSettings.filter(s=>s.key.startsWith('trained_')).forEach(s=>{
+      trainedByDate[s.key.replace('trained_','')] = true;
+    });
+    const setsByDate = {};
+    allSets.forEach(s=>{
+      if(!setsByDate[s.date]) setsByDate[s.date] = 0;
+      setsByDate[s.date]++;
+    });
+
+    function isTrainedDate(ds) {
+      return !!(trainedByDate[ds] || (setsByDate[ds] && setsByDate[ds] > 0));
+    }
+    function isRestDay(dt) {
+      return [6,0,1,2,3,4,5][dt.getDay()] === 6; // Minggu = rest
+    }
+
+    // Build 4-week data
+    const weeks = [];
+    for(let w=0;w<4;w++) {
+      const days = [];
+      for(let d=0;d<7;d++) {
+        const dt=new Date(); dt.setDate(dt.getDate()-(w*7+d));
+        const ds=dt.toISOString().slice(0,10);
+        const rest = isRestDay(dt);
+        days.push({date:ds, rest, trained: rest ? false : isTrainedDate(ds)});
+      }
+      const expected=days.filter(d=>!d.rest).length;
+      const done=days.filter(d=>d.trained).length;
+      weeks.push({days,expected,done,pct:expected>0?Math.round(done/expected*100):0});
+    }
+
+    const col = p => p>=80?'var(--green)':p>=50?'var(--gold)':'var(--muted)';
+    const colBg = p => p>=80?'var(--green)':p>=50?'var(--gold)':'var(--border2)';
+    const wLabels = ['Minggu Ini','Minggu Lalu','2M Lalu','3M Lalu'];
+
+    // Week summary cards
+    const wgEl = document.getElementById('weekGrid');
+    if(wgEl) wgEl.innerHTML = weeks.map((w,i)=>`
+      <div class="week-card">
+        <div class="week-num">${wLabels[i]}</div>
+        <div class="week-pct" style="color:${w.done===0?'var(--dim)':col(w.pct)}">${w.done===0?'—':w.pct+'%'}</div>
+        <div style="font-size:10px;color:var(--dim)">${w.done}/${w.expected}hr</div>
+        <div class="week-bar-bg"><div class="week-bar-fill" style="width:${w.pct}%;background:${colBg(w.pct)}"></div></div>
+      </div>`).join('');
+
+    // Calendar — last 28 days, Monday-first layout
+    const calEl = document.getElementById('calGrid');
+    if(!calEl) return;
+
+    // Day headers Mon–Sun (Senin–Minggu)
+    const dayLabels = ['Sen','Sel','Rab','Kam','Jum','Sab','Min'];
+    let calHTML = dayLabels.map(d=>`<div style="text-align:center;font-size:9px;color:var(--dim);padding-bottom:3px;font-weight:600">${d}</div>`).join('');
+
+    // Build 28 day array oldest → newest
+    const allDays = [];
+    for(let i=27;i>=0;i--) {
+      const dt=new Date(); dt.setDate(dt.getDate()-i);
+      allDays.push(dt);
+    }
+
+    // Align first day to Monday (1=Mon, 2=Tue ... 0=Sun treated as 7)
+    const firstDt = allDays[0];
+    const firstDow = firstDt.getDay(); // 0=Sun,1=Mon,...,6=Sat
+    const mondayOffset = firstDow === 0 ? 6 : firstDow - 1; // cells to pad before first day
+    for(let p=0;p<mondayOffset;p++) calHTML += `<div></div>`;
+
+    for(const dt of allDays) {
+      const ds = dt.toISOString().slice(0,10);
+      const rest = isRestDay(dt);
+      const trained = isTrainedDate(ds);
+      const isToday = ds === todayStr();
+      const bg = rest ? 'var(--border)' : trained ? 'var(--green)' : 'var(--bg3)';
+      const border = isToday ? '1.5px solid var(--push)' : '1px solid transparent';
+      const content = rest ? '' : trained ? '✓' : '';
+      const textCol = rest ? 'var(--dim)' : trained ? '#fff' : 'var(--dim)';
+      calHTML += `<div style="aspect-ratio:1;border-radius:5px;display:flex;align-items:center;
+        justify-content:center;font-size:10px;font-weight:600;border:${border};
+        background:${bg};color:${textCol}">${content}</div>`;
+    }
+    calEl.innerHTML = calHTML;
+
+  } catch(e) {
+    console.error('renderKons error:', e);
+    const wg = document.getElementById('weekGrid');
+    if(wg) wg.innerHTML = '<div style="color:var(--dim);font-size:12px;padding:8px">Gagal memuat data konsistensi</div>';
   }
-  calEl.innerHTML=calHTML;
 }
 
 async function renderPR() {
