@@ -2,385 +2,482 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 <meta name="theme-color" content="#0A0A0F">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Workout">
-<title>Workout Tracker</title>
+<meta name="apple-mobile-web-app-title" content="WorkoutOS">
+<title>Workout OS</title>
 <link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon.svg">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0A0A0F;--bg2:#0D0D1A;--bg3:#0F0F1E;--border:#1E1E2E;
-  --text:#E8E8E8;--muted:#888;--dim:#555;
+  --bg:#0A0A0F;--bg2:#0D0D1A;--bg3:#111120;
+  --border:#1E1E2E;--border2:#2A2A3E;
+  --text:#E8E8E8;--muted:#888;--dim:#444;
   --push:#FF6B35;--pull:#00D4AA;--legs:#A855F7;--rest:#64748B;
-  --gold:#F59E0B;--red:#EF4444;--green:#22C55E;
+  --gold:#F59E0B;--red:#EF4444;--green:#22C55E;--blue:#3B82F6;
   --nav-h:62px;--safe:env(safe-area-inset-bottom,0px);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;-webkit-tap-highlight-color:transparent;overscroll-behavior:none}
-#app{display:flex;flex-direction:column;height:100%;height:100dvh}
-.screen{display:none;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--nav-h) + var(--safe) + 16px)}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);
+  font-family:'DM Sans',sans-serif;-webkit-tap-highlight-color:transparent;overscroll-behavior:none}
+#app{display:flex;flex-direction:column;height:100dvh}
+
+/* SCREENS */
+.screen{display:none;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  padding-bottom:calc(var(--nav-h) + var(--safe) + 8px)}
 .screen.active{display:block}
 .screen::-webkit-scrollbar{display:none}
 
 /* NAV */
-.nav{position:fixed;bottom:0;left:0;right:0;height:calc(var(--nav-h) + var(--safe));padding-bottom:var(--safe);background:#0C0C16;border-top:1px solid var(--border);display:flex;z-index:100}
-.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:none;border:none;cursor:pointer;color:var(--dim);font-size:10px;font-family:'DM Sans',sans-serif;letter-spacing:.5px;text-transform:uppercase;transition:color .2s;padding:8px 0;-webkit-tap-highlight-color:transparent}
-.nav-btn .ni{font-size:20px}
-.nav-btn.active{color:var(--push)}
+.nav{position:fixed;bottom:0;left:0;right:0;
+  height:calc(var(--nav-h) + var(--safe));padding-bottom:var(--safe);
+  background:#0C0C16;border-top:1px solid var(--border);display:flex;z-index:100}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:3px;background:none;border:none;cursor:pointer;color:var(--dim);font-size:10px;
+  font-family:'DM Sans',sans-serif;letter-spacing:.5px;text-transform:uppercase;
+  transition:color .2s;padding:8px 0;-webkit-tap-highlight-color:transparent}
+.nb .ni{font-size:21px}.nb.on{color:var(--push)}
 
 /* SHARED */
-.ph{padding:18px 16px 12px;background:linear-gradient(180deg,#0E0E18 0%,var(--bg) 100%);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10}
-.pt{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px;color:#fff}
-.ps{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-top:2px}
-.sec{padding:12px 16px}
+.ph{padding:16px 16px 12px;background:linear-gradient(180deg,#0E0E18,var(--bg));
+  border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10}
+.pt{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:#fff}
+.ps{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-top:2px}
+.sec{padding:10px 14px}
+.lbl{font-size:10px;letter-spacing:1.8px;text-transform:uppercase;color:var(--dim);
+  margin-bottom:7px;padding-left:1px}
 .card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:11px 16px;border-radius:10px;border:none;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:opacity .15s,transform .1s;-webkit-tap-highlight-color:transparent}
-.btn:active{transform:scale(.97);opacity:.85}
-.btn-p{background:var(--push);color:#fff}
-.btn-o{background:transparent;border:1px solid var(--border);color:var(--text)}
-.btn-d{background:var(--red);color:#fff}
-.btn-g{background:var(--green);color:#fff}
-.btn-f{width:100%}
-.label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:8px;padding-left:2px}
+.divider{border:none;border-top:1px solid var(--border)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;
+  padding:11px 16px;border-radius:10px;border:none;font-family:'DM Sans',sans-serif;
+  font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;
+  -webkit-tap-highlight-color:transparent}
+.btn:active{transform:scale(.96);opacity:.85}
+.bp{background:var(--push);color:#fff}
+.bo{background:transparent;border:1px solid var(--border2);color:var(--text)}
+.bg{background:var(--green);color:#fff}
+.br{background:var(--red);color:#fff}
+.bb{background:var(--blue);color:#fff}
+.bf{width:100%}
 
-/* ── JADWAL ── */
-.dtbar{overflow-x:auto;padding:10px 16px;background:#0C0C16;border-bottom:1px solid var(--border)}
+/* ═══ REST TIMER BANNER ═══ */
+#timerBanner{display:none;position:sticky;top:52px;z-index:9;
+  background:linear-gradient(135deg,#1A0F00,#120A00);
+  border-bottom:1px solid var(--push);padding:10px 14px;
+  flex-direction:row;align-items:center;gap:12px}
+#timerBanner.show{display:flex}
+.tb-arc{position:relative;width:44px;height:44px;flex-shrink:0}
+.tb-svg{transform:rotate(-90deg)}
+.tb-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:1px;color:#fff}
+.tb-info{flex:1}
+.tb-label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
+.tb-time{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:1px;color:var(--push);line-height:1}
+.tb-skip{background:transparent;border:1px solid #FF6B3555;color:var(--push);
+  border-radius:6px;padding:5px 10px;font-size:12px;font-weight:600;cursor:pointer;
+  -webkit-tap-highlight-color:transparent}
+
+/* ═══ LATIHAN SCREEN ═══ */
+.day-hero{padding:14px 14px 10px;background:linear-gradient(135deg,#FF6B3512,transparent)}
+.day-hero-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.day-label{font-family:'Bebas Neue',sans-serif;font-size:10px;letter-spacing:3px;color:var(--push)}
+.day-name{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:2px;color:#fff;line-height:1}
+.day-tag{font-size:12px;color:var(--muted);margin-top:2px}
+.day-focus{font-size:12px;color:#bbb;margin-top:8px;padding-top:8px;border-top:1px solid #FF6B3522}
+.day-focus b{color:var(--push);margin-right:4px}
+.rec-pill{background:rgba(0,0,0,.3);border:1px solid #2A2A3A;border-radius:8px;
+  padding:6px 10px;text-align:center;flex-shrink:0}
+.rec-lbl{font-size:9px;color:var(--dim);letter-spacing:1px;text-transform:uppercase}
+.rec-val{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--push);letter-spacing:1px}
+
+/* Consistency bar */
+.cons-wrap{padding:8px 14px 4px}
+.cons-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.cons-pct{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px}
+.cons-label{font-size:11px;color:var(--muted)}
+.cons-bg{height:4px;background:var(--border2);border-radius:99px;overflow:hidden}
+.cons-fill{height:100%;border-radius:99px;transition:width .6s;background:var(--green)}
+
+/* Workout progress */
+.wk-prog{padding:6px 14px 8px;display:flex;align-items:center;gap:10px}
+.wk-prog-bar-bg{flex:1;height:4px;background:var(--border2);border-radius:99px;overflow:hidden}
+.wk-prog-fill{height:100%;border-radius:99px;background:var(--push);transition:width .3s}
+.wk-prog-count{font-size:12px;color:var(--muted);white-space:nowrap}
+
+/* Exercise cards */
+.ex-card{background:var(--bg2);border-bottom:1px solid var(--border);transition:background .15s}
+.ex-card:last-child{border-bottom:none}
+.ex-card-header{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;
+  -webkit-tap-highlight-color:transparent}
+.ex-card-header:active{background:rgba(255,255,255,.02)}
+.ex-check{width:24px;height:24px;border-radius:7px;border:2px solid var(--dim);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:13px;transition:all .2s}
+.ex-check.done{background:var(--green);border-color:var(--green);color:#fff}
+.ex-check.partial{border-color:var(--push);color:var(--push)}
+.ex-main{flex:1;min-width:0}
+.ex-name{font-size:14px;color:var(--text);font-weight:500}
+.ex-prev{font-size:11px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ex-sets-badge{font-size:11px;color:var(--dim);white-space:nowrap;flex-shrink:0}
+.ex-sets-badge.partial{color:var(--push)}
+.ex-sets-badge.done{color:var(--green)}
+.ex-chevron{font-size:12px;color:var(--dim);transition:transform .2s;flex-shrink:0}
+.ex-card.open .ex-chevron{transform:rotate(180deg)}
+
+/* Exercise body (expanded) */
+.ex-body{display:none;padding:0 14px 14px;border-top:1px solid var(--border)}
+.ex-card.open .ex-body{display:block}
+.ex-prev-detail{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;
+  padding:9px 11px;margin-bottom:10px;margin-top:10px}
+.ex-prev-title{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);margin-bottom:4px}
+.ex-prev-sets{display:flex;flex-wrap:wrap;gap:5px}
+.ex-prev-set-pill{background:var(--bg);border:1px solid var(--border2);border-radius:5px;
+  padding:3px 8px;font-size:12px;color:var(--muted)}
+.ex-prev-vol{font-size:11px;color:var(--dim);margin-top:5px}
+.ex-suggestion{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);
+  border-radius:8px;padding:7px 10px;margin-bottom:10px;
+  display:flex;align-items:center;gap:6px;font-size:12px;color:var(--gold)}
+
+/* Today's sets */
+.today-sets{margin-bottom:10px}
+.today-set-row{display:flex;align-items:center;gap:8px;padding:5px 0;
+  border-bottom:1px solid var(--border);font-size:13px}
+.today-set-row:last-child{border-bottom:none}
+.set-num{font-size:11px;color:var(--dim);width:30px;flex-shrink:0}
+.set-val{flex:1;color:var(--text)}
+.set-del{background:none;border:none;color:var(--dim);cursor:pointer;
+  padding:3px 6px;border-radius:4px;font-size:13px;-webkit-tap-highlight-color:transparent}
+.set-del:active{color:var(--red)}
+
+/* Set input */
+.set-input-row{display:flex;gap:8px;align-items:flex-end;margin-bottom:8px}
+.set-input-group{display:flex;flex-direction:column;gap:4px;flex:1}
+.set-input-label{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--dim)}
+.set-input{background:var(--bg);border:1px solid var(--border2);border-radius:8px;
+  padding:10px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:16px;
+  font-weight:600;outline:none;width:100%;text-align:center}
+.set-input:focus{border-color:var(--push)}
+.set-input-unit{font-size:11px;color:var(--dim);text-align:center}
+.bw-toggle{display:flex;align-items:center;gap:6px;margin-bottom:8px;cursor:pointer;
+  -webkit-tap-highlight-color:transparent}
+.bw-cb{width:16px;height:16px;border:2px solid var(--dim);border-radius:4px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:10px;transition:all .2s}
+.bw-cb.on{background:var(--push);border-color:var(--push);color:#fff}
+.bw-label{font-size:12px;color:var(--muted)}
+
+/* Finisher */
+.finisher-row{padding:11px 14px;background:rgba(255,107,53,.06);
+  border-top:1px solid #FF6B3522;display:flex;align-items:center;gap:8px}
+.finisher-icon{font-size:16px;flex-shrink:0}
+.finisher-text{font-size:12px;color:#ccc}
+.finisher-label{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--push);margin-bottom:2px}
+
+/* Done button */
+.done-workout-btn{margin:12px 14px;padding:14px;font-size:15px;border-radius:12px}
+
+/* ═══ JADWAL ═══ */
+.dtbar{overflow-x:auto;padding:8px 14px;background:#0C0C16;border-bottom:1px solid var(--border)}
 .dtbar::-webkit-scrollbar{display:none}
-.dts{display:flex;gap:8px;min-width:max-content}
-.dt{background:transparent;border:1px solid var(--border);color:var(--muted);cursor:pointer;padding:7px 12px;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;letter-spacing:1px;text-transform:uppercase;transition:all .2s;white-space:nowrap;-webkit-tap-highlight-color:transparent}
-.dcard{border-radius:12px;padding:14px;border:1px solid transparent;margin-bottom:10px}
-.dctop{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px}
-.dns{font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:3px}
-.dnm{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;color:#fff;line-height:1}
-.dnt{font-size:13px;color:var(--muted);margin-top:3px}
-.rb{background:rgba(0,0,0,.3);border:1px solid #2A2A3A;border-radius:8px;padding:6px 11px;text-align:center}
-.rl{font-size:9px;color:var(--dim);letter-spacing:1px;text-transform:uppercase}
-.rv{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px}
-.df{margin-top:10px;padding-top:10px;font-size:13px;color:#ccc}
-.df b{margin-right:5px}
-.ext{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:4px 14px 8px}
-.exh{display:grid;grid-template-columns:1fr 48px 68px;gap:8px;padding:8px 0 5px;border-bottom:1px solid var(--border)}
-.exh span{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim)}
-.exh span:nth-child(2),.exh span:nth-child(3){text-align:center}
-.exr{display:grid;grid-template-columns:1fr 48px 68px;gap:8px;align-items:center;padding:9px 0;border-bottom:1px solid #1A1A28}
-.exr:last-child{border-bottom:none}
-.exn{font-size:13px;color:#DDD}
-.exb{display:inline-block;font-size:10px;padding:2px 6px;border-radius:4px;margin-left:4px;vertical-align:middle}
-.exs{font-family:'Bebas Neue',sans-serif;font-size:16px;color:#fff;text-align:center}
-.exs.e,.exrp.e{color:#333}
-.exrp{font-size:12px;font-weight:500;text-align:center}
-.fin{border-radius:10px;padding:11px 14px;display:flex;align-items:center;gap:10px;border:1px solid transparent;margin-top:10px}
-.fl{font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-bottom:2px}
-.ft{font-size:13px;color:#ccc}
+.dts{display:flex;gap:7px;min-width:max-content}
+.dt{background:transparent;border:1px solid var(--border);color:var(--muted);cursor:pointer;
+  padding:6px 11px;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:12px;
+  font-weight:500;letter-spacing:1px;text-transform:uppercase;transition:all .2s;
+  white-space:nowrap;-webkit-tap-highlight-color:transparent}
+.jcard{border-radius:12px;padding:13px;border:1px solid transparent;margin-bottom:10px}
+.jctop{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px}
+.jns{font-family:'Bebas Neue',sans-serif;font-size:10px;letter-spacing:3px}
+.jnm{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px;color:#fff;line-height:1}
+.jnt{font-size:12px;color:var(--muted);margin-top:3px}
+.jf{margin-top:10px;padding-top:10px;font-size:12px;color:#ccc}
+.jf b{margin-right:4px}
+.jext{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:4px 13px 8px}
+.jexh{display:grid;grid-template-columns:1fr 46px 64px;gap:8px;padding:8px 0 5px;
+  border-bottom:1px solid var(--border)}
+.jexh span{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim)}
+.jexh span:nth-child(2),.jexh span:nth-child(3){text-align:center}
+.jexr{display:grid;grid-template-columns:1fr 46px 64px;gap:8px;align-items:center;
+  padding:8px 0;border-bottom:1px solid #1A1A28}
+.jexr:last-child{border-bottom:none}
+.jexn{font-size:13px;color:#DDD}
+.jexb{display:inline-block;font-size:10px;padding:2px 5px;border-radius:4px;margin-left:4px;vertical-align:middle}
+.jexs{font-family:'Bebas Neue',sans-serif;font-size:16px;color:#fff;text-align:center}
+.jexs.e,.jexrp.e{color:#333}
+.jexrp{font-size:12px;font-weight:500;text-align:center}
+.jfin{border-radius:10px;padding:10px 13px;display:flex;align-items:center;
+  gap:10px;border:1px solid transparent;margin-top:10px}
 
-/* ── HARI INI ── */
-/* Streak */
-.streak-wrap{margin:12px 16px 0;background:linear-gradient(135deg,#FF6B3520,#FF6B3508);border:1px solid #FF6B3540;border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:14px}
-.streak-fire{font-size:36px;line-height:1}
-.streak-num{font-family:'Bebas Neue',sans-serif;font-size:42px;color:var(--push);line-height:1}
-.streak-label{font-size:11px;color:var(--muted);margin-top:2px;letter-spacing:.5px}
-.streak-best{font-size:11px;color:var(--dim);margin-top:4px}
-/* Progress bar */
-.pw{padding:10px 16px 0}
-.pb-top{display:flex;justify-content:space-between;align-items:center}
-.pb-bg{background:var(--border);border-radius:99px;height:5px;overflow:hidden;margin-top:6px}
-.pb-fill{height:100%;border-radius:99px;transition:width .35s}
-/* Checklist */
-.ci{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid #1A1A28;cursor:pointer;transition:background .15s;-webkit-tap-highlight-color:transparent}
-.ci:last-child{border-bottom:none}
-.ci:active{background:rgba(255,255,255,.03)}
-.cbox{width:22px;height:22px;border-radius:6px;border:2px solid var(--dim);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;transition:all .2s}
-.ci.done .cbox{border-color:transparent}
-.ci.done .exn{text-decoration:line-through;color:var(--dim)}
-.cinfo{flex:1}
-.csets{font-size:11px;color:var(--muted);margin-top:2px}
-
-/* ── TIMER ── */
-.twrap{display:flex;flex-direction:column;align-items:center;padding:16px;gap:16px}
-.tsvgw{position:relative;width:200px;height:200px}
-.tsvg{transform:rotate(-90deg)}
-.ttext{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
-.tdisp{font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:2px;color:#fff;line-height:1}
-.tstat{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-top:3px}
-.presets{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;width:100%}
-.pre{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent}
-.pre:active{transform:scale(.95)}
-.pre.sel{border-color:var(--push);color:var(--push);background:rgba(255,107,53,.1)}
-.tbtns{display:flex;gap:10px;width:100%}
-.tbtns .btn{flex:1}
-.crow{display:flex;gap:8px;width:100%}
-.crow input{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none}
-.crow input:focus{border-color:var(--push)}
-.crow input::placeholder{color:var(--dim)}
-
-/* ── LOG & PROGRES ── */
-.tab-switch{display:flex;gap:0;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:3px;margin:12px 16px 0}
-.tsw{flex:1;padding:8px;border-radius:7px;border:none;background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent}
+/* ═══ PROGRES ═══ */
+.tab-sw{display:flex;gap:0;background:var(--bg2);border:1px solid var(--border);
+  border-radius:10px;padding:3px;margin:10px 14px 0}
+.tsw{flex:1;padding:8px;border-radius:7px;border:none;background:transparent;color:var(--muted);
+  font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s;
+  -webkit-tap-highlight-color:transparent}
 .tsw.on{background:var(--push);color:#fff}
-/* log form */
-.lform{padding:12px 16px}
-.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:10px}
-.flabel{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim)}
-.fi{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;width:100%}
-.fi:focus{border-color:var(--push)}
-.fi::placeholder{color:var(--dim)}
-.frow{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-/* log entries */
-.llist{padding:0 16px 12px}
-.ldl{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:6px;padding-left:2px}
-.lentry{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
-.lname{font-size:14px;color:#ddd;font-weight:500}
-.ldet{font-size:12px;color:var(--muted);margin-top:2px}
-.ldel{background:none;border:none;color:var(--dim);cursor:pointer;font-size:15px;flex-shrink:0;padding:2px 4px;border-radius:4px;-webkit-tap-highlight-color:transparent}
-.ldel:active{color:var(--red)}
-.pr-badge{display:inline-flex;align-items:center;gap:3px;background:rgba(245,158,11,.15);color:var(--gold);border:1px solid rgba(245,158,11,.3);border-radius:4px;font-size:10px;font-weight:600;padding:2px 6px;margin-left:6px;vertical-align:middle}
-.lempty{text-align:center;color:var(--dim);font-size:13px;padding:32px 0;line-height:1.8}
-.ldg{margin-bottom:12px}
-/* PR list */
-.pr-item{display:flex;justify-content:space-between;align-items:center;padding:11px 14px;border-bottom:1px solid #1A1A28}
-.pr-item:last-child{border-bottom:none}
-.pr-exname{font-size:13px;color:#ddd}
-.pr-val{text-align:right}
-.pr-weight{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--gold);letter-spacing:1px}
-.pr-date{font-size:11px;color:var(--dim);margin-top:1px}
-/* Chart */
-.chart-wrap{padding:12px 16px}
-.chart-select{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;width:100%;margin-bottom:12px;-webkit-appearance:none}
-.chart-box{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px;overflow:hidden}
-.chart-empty{text-align:center;color:var(--dim);font-size:13px;padding:24px 0}
 
-/* ── SETTING ── */
-.sit{display:flex;justify-content:space-between;align-items:center;padding:13px 14px;border-bottom:1px solid var(--border)}
+/* Consistency weeks */
+.week-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:4px}
+.week-card{background:var(--bg3);border:1px solid var(--border);border-radius:8px;
+  padding:10px 8px;text-align:center}
+.week-num{font-size:10px;color:var(--dim);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px}
+.week-pct{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px}
+.week-bar-bg{height:3px;background:var(--border2);border-radius:99px;margin-top:5px;overflow:hidden}
+.week-bar-fill{height:100%;border-radius:99px;transition:width .5s}
+
+/* PR list */
+.pr-row{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;
+  border-bottom:1px solid var(--border)}
+.pr-row:last-child{border-bottom:none}
+.pr-exname{font-size:13px;color:var(--text)}
+.pr-right{text-align:right}
+.pr-w{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--gold);letter-spacing:1px}
+.pr-e1rm{font-size:11px;color:var(--dim);margin-top:1px}
+.pr-date{font-size:10px;color:var(--dim)}
+
+/* Chart */
+.chart-sel{background:var(--bg2);border:1px solid var(--border);border-radius:8px;
+  padding:10px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;
+  outline:none;width:100%;margin-bottom:10px;-webkit-appearance:none}
+.chart-type-row{display:flex;gap:6px;margin-bottom:10px}
+.ct-btn{flex:1;padding:7px;border-radius:6px;border:1px solid var(--border);background:transparent;
+  color:var(--muted);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;transition:all .2s}
+.ct-btn.on{background:var(--push);color:#fff;border-color:var(--push)}
+.chart-box{background:var(--bg2);border:1px solid var(--border);border-radius:12px;
+  padding:14px;overflow:hidden}
+.chart-empty{text-align:center;color:var(--dim);font-size:13px;padding:24px 0;line-height:1.7}
+
+/* Volume summary */
+.vol-row{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;
+  border-bottom:1px solid var(--border)}
+.vol-row:last-child{border-bottom:none}
+.vol-label{font-size:13px;color:var(--text)}
+.vol-val{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px}
+
+/* ═══ SETTING ═══ */
+.sit{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;
+  border-bottom:1px solid var(--border)}
 .sit:last-child{border-bottom:none}
 .slbl{font-size:14px;color:var(--text)}
-.ssub{font-size:12px;color:var(--muted);margin-top:2px}
+.ssub{font-size:11px;color:var(--muted);margin-top:2px}
 .toggle{position:relative;width:44px;height:24px;flex-shrink:0}
 .toggle input{opacity:0;width:0;height:0}
 .tgl{position:absolute;inset:0;background:#333;border-radius:99px;cursor:pointer;transition:background .2s}
 .tgl::after{content:'';position:absolute;width:18px;height:18px;border-radius:50%;background:#fff;top:3px;left:3px;transition:transform .2s}
 .toggle input:checked+.tgl{background:var(--push)}
 .toggle input:checked+.tgl::after{transform:translateX(20px)}
-.ti{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:8px 10px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;outline:none;width:100px;text-align:center}
+.ti{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:8px 10px;
+  color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;
+  outline:none;width:100px;text-align:center}
 .ti:focus{border-color:var(--push)}
-.nb{display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:5px 10px;border-radius:6px}
-.ng{background:rgba(0,212,170,.1);color:var(--pull)}
-.nd{background:rgba(239,68,68,.1);color:var(--red)}
-.ndf{background:rgba(255,107,53,.1);color:var(--push)}
-.stat-num{font-family:'Bebas Neue',sans-serif;font-size:22px}
+.stat-n{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px}
+.nb-badge{display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:5px 10px;border-radius:6px}
+.nb-g{background:rgba(0,212,170,.1);color:var(--pull)}
+.nb-d{background:rgba(239,68,68,.1);color:var(--red)}
+.nb-n{background:rgba(255,107,53,.1);color:var(--push)}
 
 /* TOAST */
-#toast{position:fixed;bottom:calc(var(--nav-h) + var(--safe) + 12px);left:50%;transform:translateX(-50%) translateY(12px);background:#1A1A2E;border:1px solid var(--border);color:var(--text);padding:9px 16px;border-radius:99px;font-size:13px;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;z-index:200}
+#toast{position:fixed;bottom:calc(var(--nav-h) + var(--safe) + 12px);left:50%;
+  transform:translateX(-50%) translateY(12px);background:#1A1A2E;border:1px solid var(--border2);
+  color:var(--text);padding:9px 16px;border-radius:99px;font-size:13px;opacity:0;
+  transition:all .3s;pointer-events:none;white-space:nowrap;z-index:200}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* DONE OVERLAY */
-#dov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:300;align-items:center;justify-content:center;flex-direction:column;gap:12px;text-align:center;padding:32px}
-#dov.show{display:flex}
-.do-em{font-size:56px}
-.do-t{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:2px;color:#fff}
-.do-s{font-size:13px;color:var(--muted)}
-
-/* PR Overlay */
-#prov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:300;align-items:center;justify-content:center;flex-direction:column;gap:12px;text-align:center;padding:32px}
+/* PR OVERLAY */
+#prov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:300;
+  align-items:center;justify-content:center;flex-direction:column;gap:10px;text-align:center;padding:32px}
 #prov.show{display:flex}
-.pr-em{font-size:56px}
-.pr-t{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:var(--gold)}
-.pr-s{font-size:14px;color:#ccc}
-.pr-ex{font-size:18px;color:#fff;font-weight:600;margin-top:4px}
+.po-t{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:2px;color:var(--gold)}
+.po-s{font-size:13px;color:var(--muted)}
+.po-n{font-size:15px;color:#fff;font-weight:600;margin-top:4px}
+.po-v{font-family:'Bebas Neue',sans-serif;font-size:42px;color:var(--gold);letter-spacing:2px}
+
+/* DONE OVERLAY */
+#dov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.94);z-index:300;
+  align-items:center;justify-content:center;flex-direction:column;gap:10px;text-align:center;padding:32px}
+#dov.show{display:flex}
+.do-t{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:2px;color:#fff}
+.do-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;width:100%;margin:10px 0}
+.do-stat{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:12px 8px;text-align:center}
+.do-stat-val{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--push);letter-spacing:1px}
+.do-stat-lbl{font-size:10px;color:var(--dim);letter-spacing:1px;text-transform:uppercase;margin-top:2px}
+
+/* Loading */
+#loading{position:fixed;inset:0;background:var(--bg);z-index:999;display:flex;
+  flex-direction:column;align-items:center;justify-content:center;gap:12px}
+.load-logo{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:3px;color:var(--push)}
+.load-sub{font-size:12px;color:var(--dim);letter-spacing:2px;text-transform:uppercase}
 </style>
 </head>
 <body>
-<div id="app">
+
+<div id="loading">
+  <div style="font-size:40px">🏋️</div>
+  <div class="load-logo">WORKOUT OS</div>
+  <div class="load-sub">Memuat data...</div>
+</div>
+
+<div id="app" style="display:none">
+
+<!-- ═══ LATIHAN ═══ -->
+<div class="screen active" id="s-latihan">
+  <div class="ph">
+    <div class="pt" id="lhTitle">LATIHAN</div>
+    <div class="ps" id="lhSub">—</div>
+  </div>
+  <div id="timerBanner">
+    <div class="tb-arc">
+      <svg class="tb-svg" width="44" height="44" viewBox="0 0 44 44">
+        <circle cx="22" cy="22" r="18" fill="none" stroke="#1E1E2E" stroke-width="3.5"/>
+        <circle id="tbArc" cx="22" cy="22" r="18" fill="none" stroke="#FF6B35"
+          stroke-width="3.5" stroke-dasharray="113" stroke-dashoffset="0" stroke-linecap="round"/>
+      </svg>
+      <div class="tb-num" id="tbNum">90</div>
+    </div>
+    <div class="tb-info">
+      <div class="tb-label">Rest Timer</div>
+      <div class="tb-time" id="tbTime">01:30</div>
+    </div>
+    <button class="tb-skip" onclick="skipTimer()">Skip ▶</button>
+  </div>
+  <div id="dayHero"></div>
+  <div class="cons-wrap">
+    <div class="cons-top">
+      <span class="cons-label">Konsistensi 4 minggu</span>
+      <span class="cons-pct" id="consPct" style="color:var(--green)">—%</span>
+    </div>
+    <div class="cons-bg"><div class="cons-fill" id="consFill" style="width:0%"></div></div>
+  </div>
+  <div class="wk-prog" id="wkProg">
+    <div class="wk-prog-bar-bg"><div class="wk-prog-fill" id="wkFill" style="width:0%"></div></div>
+    <div class="wk-prog-count" id="wkCount">0/0</div>
+  </div>
+  <div class="card" style="margin:0 14px 6px;border-radius:12px;overflow:hidden">
+    <div id="exList"></div>
+  </div>
+  <div id="finisherRow"></div>
+  <div style="padding:0 14px 4px">
+    <button class="btn bp bf done-workout-btn" id="doneBtn" onclick="finishWorkout()" style="display:none">
+      🏁 Selesaikan Workout
+    </button>
+  </div>
+</div>
 
 <!-- ═══ JADWAL ═══ -->
-<div class="screen active" id="s-jadwal">
-  <div class="ph"><div class="pt">JADWAL</div><div class="ps">Aesthetic + Functional</div></div>
+<div class="screen" id="s-jadwal">
+  <div class="ph"><div class="pt">JADWAL</div><div class="ps">Weekly Program</div></div>
   <div class="dtbar"><div class="dts" id="dayTabs"></div></div>
-  <div class="sec" id="dayPanel"></div>
+  <div class="sec" id="jadwalPanel"></div>
 </div>
 
-<!-- ═══ HARI INI ═══ -->
-<div class="screen" id="s-hari">
-  <div class="ph">
-    <div class="pt" id="hariTitle">HARI INI</div>
-    <div class="ps" id="hariSub">—</div>
-  </div>
-  <!-- Streak -->
-  <div class="streak-wrap">
-    <div class="streak-fire">🔥</div>
-    <div>
-      <div class="streak-num" id="streakNum">0</div>
-      <div class="streak-label">Hari berturut-turut latihan</div>
-      <div class="streak-best" id="streakBest">Rekor terbaik: 0 hari</div>
-    </div>
-  </div>
-  <!-- Progress -->
-  <div class="pw">
-    <div class="pb-top">
-      <span style="font-size:13px;color:var(--muted)">Progress hari ini</span>
-      <span style="font-size:13px;font-weight:600" id="progCount">0/0</span>
-    </div>
-    <div class="pb-bg"><div class="pb-fill" id="progBar" style="width:0%"></div></div>
-  </div>
-  <div class="sec">
-    <div class="card" id="checkList"></div>
-  </div>
-  <div class="sec" style="padding-top:0">
-    <button class="btn btn-o btn-f" onclick="resetChecklist()" style="font-size:12px;padding:10px">↺ Reset Checklist</button>
-  </div>
-</div>
-
-<!-- ═══ TIMER ═══ -->
-<div class="screen" id="s-timer">
-  <div class="ph"><div class="pt">REST TIMER</div><div class="ps">Istirahat antar set</div></div>
-  <div class="twrap">
-    <div class="tsvgw">
-      <svg class="tsvg" width="200" height="200" viewBox="0 0 200 200">
-        <circle cx="100" cy="100" r="88" fill="none" stroke="#1E1E2E" stroke-width="8"/>
-        <circle id="tArc" cx="100" cy="100" r="88" fill="none" stroke="#FF6B35"
-          stroke-width="8" stroke-dasharray="553" stroke-dashoffset="0" stroke-linecap="round"/>
-      </svg>
-      <div class="ttext">
-        <div class="tdisp" id="tDisp">01:30</div>
-        <div class="tstat" id="tStat">Siap</div>
-      </div>
-    </div>
-    <div class="presets" id="presets">
-      <button class="pre" data-sec="30">30d</button>
-      <button class="pre" data-sec="60">1m</button>
-      <button class="pre sel" data-sec="90">1m 30d</button>
-      <button class="pre" data-sec="120">2m</button>
-      <button class="pre" data-sec="180">3m</button>
-    </div>
-    <div class="crow">
-      <input type="number" id="cSec" placeholder="Custom (detik)..." min="1" max="3600">
-      <button class="btn btn-o" onclick="setCustom()">Set</button>
-    </div>
-    <div class="tbtns">
-      <button class="btn btn-o" onclick="resetTimer()">Reset</button>
-      <button class="btn btn-p" id="btnStart" onclick="toggleTimer()">Mulai</button>
-    </div>
-  </div>
-</div>
-
-<!-- ═══ LOG & PROGRES ═══ -->
-<div class="screen" id="s-log">
-  <div class="ph"><div class="pt">LOG & PROGRES</div><div class="ps">Catat & lacak perkembangan</div></div>
-  <div class="tab-switch">
-    <button class="tsw on" id="tabLog" onclick="switchLogTab('log')">📋 Log</button>
-    <button class="tsw" id="tabPR" onclick="switchLogTab('pr')">🏆 PR</button>
-    <button class="tsw" id="tabChart" onclick="switchLogTab('chart')">📈 Grafik</button>
+<!-- ═══ PROGRES ═══ -->
+<div class="screen" id="s-progres">
+  <div class="ph"><div class="pt">PROGRES</div><div class="ps">Analytics & Tracking</div></div>
+  <div class="tab-sw">
+    <button class="tsw on" id="tpKons" onclick="switchProg('kons')">📊 Konsistensi</button>
+    <button class="tsw" id="tpPR" onclick="switchProg('pr')">🏆 PR</button>
+    <button class="tsw" id="tpChart" onclick="switchProg('chart')">📈 Grafik</button>
+    <button class="tsw" id="tpVol" onclick="switchProg('vol')">💪 Volume</button>
   </div>
 
-  <!-- LOG TAB -->
-  <div id="lTab">
-    <div class="lform">
-      <div class="fg">
-        <div class="flabel">Nama Latihan</div>
-        <input type="text" id="logEx" class="fi" placeholder="Contoh: Bench Press..." list="exList">
-        <datalist id="exList"></datalist>
-      </div>
-      <div class="frow">
-        <div class="fg">
-          <div class="flabel">Set × Rep</div>
-          <input type="text" id="logSR" class="fi" placeholder="4×10">
-        </div>
-        <div class="fg">
-          <div class="flabel">Beban (kg)</div>
-          <input type="number" id="logW" class="fi" placeholder="20" min="0" step="0.5">
-        </div>
-      </div>
-      <div class="fg">
-        <div class="flabel">Catatan (opsional)</div>
-        <input type="text" id="logNote" class="fi" placeholder="Form bagus, nambah 2.5kg...">
-      </div>
-      <button class="btn btn-p btn-f" onclick="addLog()">+ Tambah Log</button>
-    </div>
-    <div id="logList" class="llist"></div>
-  </div>
-
-  <!-- PR TAB -->
-  <div id="prTab" style="display:none">
+  <!-- KONSISTENSI -->
+  <div id="pKons">
     <div class="sec">
-      <div class="label">Personal Record per Latihan</div>
+      <div class="lbl">4 Minggu Terakhir</div>
+      <div class="week-grid" id="weekGrid"></div>
+    </div>
+    <div class="sec" style="padding-top:0">
+      <div class="lbl">Kalender Aktivitas (28 hari)</div>
+      <div class="card" id="calGrid" style="padding:12px;display:grid;grid-template-columns:repeat(7,1fr);gap:4px"></div>
+    </div>
+  </div>
+
+  <!-- PR -->
+  <div id="pPR" style="display:none">
+    <div class="sec">
+      <div class="lbl">Personal Records</div>
       <div class="card" id="prList"></div>
     </div>
   </div>
 
-  <!-- CHART TAB -->
-  <div id="chartTab" style="display:none">
-    <div class="chart-wrap">
-      <div class="label">Pilih Latihan</div>
-      <select id="chartSelect" class="chart-select" onchange="renderChart()">
+  <!-- CHART -->
+  <div id="pChart" style="display:none">
+    <div class="sec">
+      <div class="lbl">Pilih Latihan</div>
+      <select id="chartSel" class="chart-sel" onchange="renderChart()">
         <option value="">-- Pilih latihan --</option>
       </select>
-      <div class="chart-box" id="chartBox">
-        <div class="chart-empty">Pilih latihan untuk melihat grafik progress</div>
+      <div class="chart-type-row">
+        <button class="ct-btn on" data-ct="weight" onclick="setChartType('weight',this)">Berat</button>
+        <button class="ct-btn" data-ct="e1rm" onclick="setChartType('e1rm',this)">e1RM</button>
+        <button class="ct-btn" data-ct="volume" onclick="setChartType('volume',this)">Volume</button>
       </div>
-      <div style="font-size:11px;color:var(--dim);margin-top:8px;text-align:center">Grafik menampilkan berat (kg) dari waktu ke waktu</div>
+      <div class="chart-box" id="chartBox">
+        <div class="chart-empty">Pilih latihan untuk melihat grafik</div>
+      </div>
+      <div style="font-size:11px;color:var(--dim);margin-top:8px;text-align:center">
+        e1RM = estimasi 1 Rep Max (Epley formula)
+      </div>
+    </div>
+  </div>
+
+  <!-- VOLUME -->
+  <div id="pVol" style="display:none">
+    <div class="sec">
+      <div class="lbl">Volume Minggu Ini (kg)</div>
+      <div class="card" id="volWeek"></div>
+    </div>
+    <div class="sec" style="padding-top:0">
+      <div class="lbl">Total Semua Waktu</div>
+      <div class="card" id="volAll"></div>
     </div>
   </div>
 </div>
 
 <!-- ═══ SETTING ═══ -->
 <div class="screen" id="s-setting">
-  <div class="ph"><div class="pt">PENGATURAN</div><div class="ps">Reminder & data</div></div>
+  <div class="ph"><div class="pt">PENGATURAN</div><div class="ps">Data & Reminder</div></div>
   <div class="sec">
-    <div class="label">Reminder Latihan</div>
+    <div class="lbl">Reminder</div>
     <div class="card">
       <div class="sit">
         <div><div class="slbl">Aktifkan Reminder</div><div class="ssub">Notifikasi harian</div></div>
-        <label class="toggle"><input type="checkbox" id="remToggle" onchange="saveRem()"><span class="tgl"></span></label>
+        <label class="toggle"><input type="checkbox" id="remT" onchange="saveRem()"><span class="tgl"></span></label>
       </div>
       <div class="sit">
-        <div><div class="slbl">Jam Pengingat</div></div>
+        <div><div class="slbl">Jam Reminder</div></div>
         <input type="time" id="remTime" class="ti" value="06:00" onchange="saveRem()">
       </div>
       <div class="sit" style="flex-direction:column;align-items:flex-start;gap:8px">
-        <div><div class="slbl">Izin Notifikasi</div><div class="ssub">Wajib untuk reminder</div></div>
-        <div id="nBadge" class="nb ndf">⏳ Belum diminta</div>
-        <button class="btn btn-o" id="nBtn" onclick="askNotif()" style="font-size:12px;padding:9px 14px">🔔 Minta Izin</button>
+        <div><div class="slbl">Izin Notifikasi</div></div>
+        <div id="nBadge" class="nb-badge nb-n">⏳ Belum diminta</div>
+        <button class="btn bo" id="nBtn" onclick="askNotif()" style="font-size:12px;padding:9px 14px">🔔 Minta Izin</button>
       </div>
     </div>
   </div>
   <div class="sec" style="padding-top:0">
-    <div class="label">Statistik</div>
+    <div class="lbl">Statistik</div>
     <div class="card">
-      <div class="sit"><div class="slbl">Total Log</div><div class="stat-num" id="stLog" style="color:var(--push)">0</div></div>
-      <div class="sit"><div class="slbl">PR Tercatat</div><div class="stat-num" id="stPR" style="color:var(--gold)">0</div></div>
-      <div class="sit"><div class="slbl">Streak Saat Ini</div><div class="stat-num" id="stStreak" style="color:var(--pull)">0 hari</div></div>
-      <div class="sit"><div class="slbl">Latihan Selesai Hari Ini</div><div class="stat-num" id="stCheck" style="color:var(--legs)">0/0</div></div>
+      <div class="sit"><div class="slbl">Total Set Tercatat</div><div class="stat-n" id="stSets" style="color:var(--push)">0</div></div>
+      <div class="sit"><div class="slbl">Total PR</div><div class="stat-n" id="stPR" style="color:var(--gold)">0</div></div>
+      <div class="sit"><div class="slbl">Konsistensi 4 Minggu</div><div class="stat-n" id="stCons" style="color:var(--green)">0%</div></div>
+      <div class="sit"><div class="slbl">Total Volume (All Time)</div><div class="stat-n" id="stVol" style="color:var(--pull)">0kg</div></div>
     </div>
   </div>
   <div class="sec" style="padding-top:0">
-    <div class="label">Data</div>
+    <div class="lbl">Data</div>
     <div class="card">
-      <div class="sit"><button class="btn btn-d btn-f" onclick="clearAll()">🗑️ Hapus Semua Data</button></div>
-    </div>
-  </div>
-  <div class="sec" style="padding-top:0">
-    <div class="label">Install App</div>
-    <div class="card">
-      <div class="sit" style="flex-direction:column;align-items:flex-start;gap:4px">
-        <div style="font-size:13px;color:var(--muted);line-height:1.8">
-          1. Buka di <b style="color:var(--text)">Chrome Android</b><br>
-          2. Tap menu <b style="color:var(--text)">⋮</b> kanan atas<br>
-          3. Tap <b style="color:var(--text)">"Tambahkan ke layar utama"</b><br>
-          4. Tap <b style="color:var(--text)">Tambahkan</b> ✅
-        </div>
-      </div>
+      <div class="sit"><button class="btn bb bf" onclick="exportData()" style="font-size:13px">📤 Export Data (JSON)</button></div>
+      <div class="sit"><button class="btn br bf" onclick="clearAllData()" style="font-size:13px">🗑️ Hapus Semua Data</button></div>
     </div>
   </div>
   <div class="sec" style="padding-top:0">
     <div class="card">
       <div class="sit" style="justify-content:center">
         <div style="text-align:center">
-          <div style="font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:var(--dim)">WORKOUT TRACKER v2.0</div>
-          <div style="font-size:12px;color:var(--dim);margin-top:2px">Streak · PR · Grafik · Timer</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--dim)">WORKOUT OS v3.0</div>
+          <div style="font-size:11px;color:var(--dim);margin-top:2px">IndexedDB · Progressive Overload · Analytics</div>
         </div>
       </div>
     </div>
@@ -389,507 +486,950 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 
 <!-- NAV -->
 <nav class="nav">
-  <button class="nav-btn active" onclick="goTo('jadwal',this)"><span class="ni">📅</span><span>Jadwal</span></button>
-  <button class="nav-btn" onclick="goTo('hari',this)"><span class="ni">✅</span><span>Hari Ini</span></button>
-  <button class="nav-btn" onclick="goTo('timer',this)"><span class="ni">⏱️</span><span>Timer</span></button>
-  <button class="nav-btn" onclick="goTo('log',this)"><span class="ni">📊</span><span>Log</span></button>
-  <button class="nav-btn" onclick="goTo('setting',this)"><span class="ni">⚙️</span><span>Setting</span></button>
+  <button class="nb on" onclick="goTo('latihan',this)"><span class="ni">💪</span><span>Latihan</span></button>
+  <button class="nb" onclick="goTo('jadwal',this)"><span class="ni">📅</span><span>Jadwal</span></button>
+  <button class="nb" onclick="goTo('progres',this)"><span class="ni">📈</span><span>Progres</span></button>
+  <button class="nb" onclick="goTo('setting',this)"><span class="ni">⚙️</span><span>Setting</span></button>
 </nav>
 </div>
 
 <!-- OVERLAYS -->
-<div id="dov">
-  <div class="do-em">💪</div>
-  <div class="do-t">REST SELESAI!</div>
-  <div class="do-s">Waktunya lanjut set berikutnya</div>
-  <button class="btn btn-p" style="margin-top:8px;padding:13px 28px" onclick="dismissDone()">OK, Lanjut!</button>
-</div>
 <div id="prov">
-  <div class="pr-em">🏆</div>
-  <div class="pr-t">PERSONAL RECORD BARU!</div>
-  <div class="pr-s">Rekor baru untuk:</div>
-  <div class="pr-ex" id="prExName">—</div>
-  <div style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--gold);margin-top:4px" id="prNewVal">—</div>
-  <button class="btn btn-g" style="margin-top:8px;padding:13px 28px" onclick="document.getElementById('prov').classList.remove('show')">Mantap! 🔥</button>
+  <div style="font-size:52px">🏆</div>
+  <div class="po-t">PERSONAL RECORD!</div>
+  <div class="po-s">Rekor baru untuk</div>
+  <div class="po-n" id="poEx">—</div>
+  <div class="po-v" id="poVal">—</div>
+  <div style="font-size:12px;color:var(--dim);margin-top:4px" id="poE1rm"></div>
+  <button class="btn bg" style="margin-top:14px;padding:13px 32px" onclick="document.getElementById('prov').classList.remove('show')">Mantap! 🔥</button>
+</div>
+<div id="dov">
+  <div style="font-size:52px">🎯</div>
+  <div class="do-t">WORKOUT SELESAI!</div>
+  <div class="do-stats" id="doStats"></div>
+  <button class="btn bp" style="margin-top:6px;padding:13px 32px" onclick="document.getElementById('dov').classList.remove('show')">OK, Luar Biasa! 💪</button>
 </div>
 <div id="toast"></div>
 
 <script>
-// ══════════════════════════════
-// DATA
-// ══════════════════════════════
-const DAYS=[
-  {day:"Senin",label:"PUSH",tag:"Chest & Shoulder",recovery:"48 jam",color:"#FF6B35",
-   focus:"Tebalin dada & bikin bahu lebar",
-   exercises:[
-    {name:"Bench Press / Weighted Push-up",sets:"4",reps:"8–10"},
-    {name:"Incline Press",sets:"3",reps:"10–12",note:"upper chest"},
-    {name:"Shoulder Press",sets:"4",reps:"8–10"},
-    {name:"Lateral Raise",sets:"3",reps:"12–15",note:"bahu bulat"},
-    {name:"Triceps Dips / Overhead Extension",sets:"3",reps:"10–12"},
-   ],functional:"Farmer's Carry → 3×20–30m"},
-  {day:"Selasa",label:"PULL",tag:"Back & Biceps",recovery:"48–72 jam",color:"#00D4AA",
-   focus:"V-taper & ketebalan punggung",
-   exercises:[
-    {name:"Pull-up",sets:"4",reps:"max",note:"normal / chin-up"},
-    {name:"Barbell Row / One-arm Row",sets:"4",reps:"8–10"},
-    {name:"Lat Pulldown (band/galon)",sets:"3",reps:"10–12"},
-    {name:"Face Pull (band)",sets:"3",reps:"12–15",note:"rear delts"},
-    {name:"Barbell Curl",sets:"3",reps:"10–12"},
-    {name:"Hammer Curl",sets:"3",reps:"10–12"},
-    {name:"Latihan Leher",sets:"—",reps:"—"},
-   ],functional:"Dead Hang → 3×max hold"},
-  {day:"Rabu",label:"LEGS",tag:"Quads, Hamstring & Calves",recovery:"72 jam",color:"#A855F7",
-   focus:"Fondasi kuat + betis proporsional",
-   exercises:[
-    {name:"Squat",sets:"4",reps:"8–10"},
-    {name:"Bulgarian Split Squat",sets:"3",reps:"10–12",note:"per kaki"},
-    {name:"Romanian Deadlift (RDL)",sets:"4",reps:"8–10"},
-    {name:"Standing Calf Raise",sets:"5",reps:"15–20"},
-    {name:"Seated Calf Raise",sets:"3",reps:"20",note:"beban di paha"},
-   ],functional:"Suitcase Carry → 3×20–30m"},
-  {day:"Kamis",label:"PUSH",tag:"Chest & Shoulder Aesthetic",recovery:"48 jam",color:"#FF6B35",
-   focus:"Upper chest & bahu bulat",
-   exercises:[
-    {name:"Incline Press",sets:"4",reps:"8–10"},
-    {name:"Dumbbell Fly / Wide Push-up",sets:"3",reps:"12–15",note:"shape"},
-    {name:"Arnold Press",sets:"4",reps:"8–10"},
-    {name:"Lateral Raise (drop set)",sets:"4",reps:"12–15"},
-    {name:"Skullcrusher / Diamond Push-up",sets:"3",reps:"12"},
-    {name:"Beban di Tengah Dada",sets:"3",reps:"12"},
-   ],functional:"Rice Bucket / Hand Gripper → 3–4 set"},
-  {day:"Jumat",label:"PULL",tag:"Back & Arms Heavy",recovery:"48–72 jam",color:"#00D4AA",
-   focus:"Power & ketebalan back-biceps",
-   exercises:[
-    {name:"Pull-up (wide grip)",sets:"4",reps:"max"},
-    {name:"Deadlift",sets:"4",reps:"5",note:"jika alat ada"},
-    {name:"Row (barbell/galon)",sets:"4",reps:"8–10"},
-    {name:"Shrugs",sets:"3",reps:"12–15",note:"trap"},
-    {name:"Concentration Curl",sets:"3",reps:"10–12"},
-    {name:"Preacher Curl (improvisasi)",sets:"3",reps:"12"},
-    {name:"Latihan Leher",sets:"—",reps:"—"},
-   ],functional:"Towel Pull-up / Hang → 3×max hold"},
-  {day:"Sabtu",label:"LEGS",tag:"Legs + Core",recovery:"72 jam",color:"#A855F7",
-   focus:"Kaki balance + core aesthetic",
-   exercises:[
-    {name:"Squat",sets:"4",reps:"8–10"},
-    {name:"Hip Thrust / Glute Bridge",sets:"3",reps:"12–15"},
-    {name:"Walking Lunge",sets:"3",reps:"12",note:"per kaki"},
-    {name:"Standing Calf Raise",sets:"5",reps:"20"},
-    {name:"Hanging / Lying Leg Raise",sets:"4",reps:"15"},
-    {name:"Plank",sets:"3",reps:"60 detik"},
-   ],functional:"Pinch Grip Hold → 3×max hold"},
-  {day:"Minggu",label:"REST",tag:"Active Recovery",recovery:null,color:"#64748B",
-   focus:"Pemulihan otot & sendi",
-   exercises:[
-    {name:"Jalan santai",sets:"—",reps:"—"},
-    {name:"Stretching",sets:"—",reps:"—"},
-    {name:"Wrist mobility",sets:"—",reps:"—"},
-    {name:"Yoga ringan",sets:"—",reps:"—"},
-   ],functional:null},
+'use strict';
+
+// ════════════════════════════════
+// DATA — PROGRAM
+// ════════════════════════════════
+const DAYS = [
+  { day:'Senin', label:'PUSH', tag:'Chest & Shoulder', recovery:'48 jam', color:'#FF6B35',
+    focus:'Tebalin dada & bikin bahu lebar', restSec:90,
+    exercises:[
+      {name:'Bench Press / Weighted Push-up', sets:4, reps:'8–10', targetReps:8},
+      {name:'Incline Press', sets:3, reps:'10–12', targetReps:10, note:'upper chest'},
+      {name:'Shoulder Press', sets:4, reps:'8–10', targetReps:8},
+      {name:'Lateral Raise', sets:3, reps:'12–15', targetReps:12, note:'bahu bulat'},
+      {name:'Triceps Dips / Overhead Extension', sets:3, reps:'10–12', targetReps:10},
+    ], functional:"Farmer's Carry → 3×20–30m"},
+  { day:'Selasa', label:'PULL', tag:'Back & Biceps', recovery:'48–72 jam', color:'#00D4AA',
+    focus:'V-taper & ketebalan punggung', restSec:90,
+    exercises:[
+      {name:'Pull-up', sets:4, reps:'max', targetReps:8, note:'normal / chin-up', bodyweight:true},
+      {name:'Barbell Row / One-arm Row', sets:4, reps:'8–10', targetReps:8},
+      {name:'Lat Pulldown (band/galon)', sets:3, reps:'10–12', targetReps:10},
+      {name:'Face Pull (band)', sets:3, reps:'12–15', targetReps:12, note:'rear delts'},
+      {name:'Barbell Curl', sets:3, reps:'10–12', targetReps:10},
+      {name:'Hammer Curl', sets:3, reps:'10–12', targetReps:10},
+      {name:'Latihan Leher', sets:0, reps:'—'},
+    ], functional:'Dead Hang → 3×max hold'},
+  { day:'Rabu', label:'LEGS', tag:'Quads, Hamstring & Calves', recovery:'72 jam', color:'#A855F7',
+    focus:'Fondasi kuat + betis proporsional', restSec:120,
+    exercises:[
+      {name:'Squat', sets:4, reps:'8–10', targetReps:8},
+      {name:'Bulgarian Split Squat', sets:3, reps:'10–12', targetReps:10, note:'per kaki'},
+      {name:'Romanian Deadlift (RDL)', sets:4, reps:'8–10', targetReps:8},
+      {name:'Standing Calf Raise', sets:5, reps:'15–20', targetReps:15},
+      {name:'Seated Calf Raise', sets:3, reps:'20', targetReps:20, note:'beban di paha'},
+    ], functional:'Suitcase Carry → 3×20–30m'},
+  { day:'Kamis', label:'PUSH', tag:'Chest & Shoulder Aesthetic', recovery:'48 jam', color:'#FF6B35',
+    focus:'Upper chest & bahu bulat', restSec:90,
+    exercises:[
+      {name:'Incline Press', sets:4, reps:'8–10', targetReps:8},
+      {name:'Dumbbell Fly / Wide Push-up', sets:3, reps:'12–15', targetReps:12, note:'shape'},
+      {name:'Arnold Press', sets:4, reps:'8–10', targetReps:8},
+      {name:'Lateral Raise (drop set)', sets:4, reps:'12–15', targetReps:12},
+      {name:'Skullcrusher / Diamond Push-up', sets:3, reps:'12', targetReps:12},
+      {name:'Beban di Tengah Dada', sets:3, reps:'12', targetReps:12},
+    ], functional:'Rice Bucket / Hand Gripper → 3–4 set'},
+  { day:'Jumat', label:'PULL', tag:'Back & Arms Heavy', recovery:'48–72 jam', color:'#00D4AA',
+    focus:'Power & ketebalan back-biceps', restSec:120,
+    exercises:[
+      {name:'Pull-up (wide grip)', sets:4, reps:'max', targetReps:8, bodyweight:true},
+      {name:'Deadlift', sets:4, reps:'5', targetReps:5},
+      {name:'Row (barbell/galon)', sets:4, reps:'8–10', targetReps:8},
+      {name:'Shrugs', sets:3, reps:'12–15', targetReps:12, note:'trap'},
+      {name:'Concentration Curl', sets:3, reps:'10–12', targetReps:10},
+      {name:'Preacher Curl (improvisasi)', sets:3, reps:'12', targetReps:12},
+      {name:'Latihan Leher', sets:0, reps:'—'},
+    ], functional:'Towel Pull-up / Hang → 3×max hold'},
+  { day:'Sabtu', label:'LEGS', tag:'Legs + Core', recovery:'72 jam', color:'#A855F7',
+    focus:'Kaki balance + core aesthetic', restSec:90,
+    exercises:[
+      {name:'Squat', sets:4, reps:'8–10', targetReps:8},
+      {name:'Hip Thrust / Glute Bridge', sets:3, reps:'12–15', targetReps:12},
+      {name:'Walking Lunge', sets:3, reps:'12', targetReps:12, note:'per kaki'},
+      {name:'Standing Calf Raise', sets:5, reps:'20', targetReps:20},
+      {name:'Hanging / Lying Leg Raise', sets:4, reps:'15', targetReps:15, bodyweight:true},
+      {name:'Plank', sets:3, reps:'60 detik', targetReps:1, bodyweight:true},
+    ], functional:'Pinch Grip Hold → 3×max hold'},
+  { day:'Minggu', label:'REST', tag:'Active Recovery', recovery:null, color:'#64748B',
+    focus:'Pemulihan otot & sendi', restSec:60,
+    exercises:[
+      {name:'Jalan santai', sets:0, reps:'—'},
+      {name:'Stretching', sets:0, reps:'—'},
+      {name:'Wrist mobility', sets:0, reps:'—'},
+      {name:'Yoga ringan', sets:0, reps:'—'},
+    ], functional:null},
 ];
 
-// ══════════════════════════════
-// STORAGE HELPERS
-// ══════════════════════════════
-const get=(k,def)=>{try{const v=localStorage.getItem(k);return v!==null?JSON.parse(v):def}catch{return def}};
-const set=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+// ════════════════════════════════
+// INDEXEDDB LAYER
+// ════════════════════════════════
+const DB = {
+  db: null,
+  async open() {
+    return new Promise((res, rej) => {
+      const req = indexedDB.open('WorkoutOS', 2);
+      req.onerror = () => rej(req.error);
+      req.onsuccess = () => { this.db = req.result; res(); };
+      req.onupgradeneeded = e => {
+        const db = e.target.result;
+        if (!db.objectStoreNames.contains('sets')) {
+          const s = db.createObjectStore('sets', {keyPath:'id', autoIncrement:true});
+          s.createIndex('date','date'); s.createIndex('exName','exerciseName');
+          s.createIndex('exDate',['exerciseName','date']);
+        }
+        if (!db.objectStoreNames.contains('settings')) {
+          db.createObjectStore('settings', {keyPath:'key'});
+        }
+      };
+    });
+  },
+  tx(store, mode='readonly') { return this.db.transaction(store, mode).objectStore(store); },
+  async add(store, data) {
+    return new Promise((res,rej) => {
+      const req = this.tx(store,'readwrite').add(data);
+      req.onsuccess = () => res(req.result); req.onerror = () => rej(req.error);
+    });
+  },
+  async del(store, id) {
+    return new Promise((res,rej) => {
+      const req = this.tx(store,'readwrite').delete(id);
+      req.onsuccess = () => res(); req.onerror = () => rej(req.error);
+    });
+  },
+  async getAll(store) {
+    return new Promise((res,rej) => {
+      const req = this.tx(store).getAll();
+      req.onsuccess = () => res(req.result); req.onerror = () => rej(req.error);
+    });
+  },
+  async getByIndex(store, idx, val) {
+    return new Promise((res,rej) => {
+      const req = this.tx(store).index(idx).getAll(val);
+      req.onsuccess = () => res(req.result); req.onerror = () => rej(req.error);
+    });
+  },
+  async getSetting(key) {
+    return new Promise((res,rej) => {
+      const req = this.tx('settings').get(key);
+      req.onsuccess = () => res(req.result ? req.result.value : null);
+      req.onerror = () => rej(req.error);
+    });
+  },
+  async setSetting(key, value) {
+    return new Promise((res,rej) => {
+      const req = this.tx('settings','readwrite').put({key, value});
+      req.onsuccess = () => res(); req.onerror = () => rej(req.error);
+    });
+  },
+  async clearStore(store) {
+    return new Promise((res,rej) => {
+      const req = this.tx(store,'readwrite').clear();
+      req.onsuccess = () => res(); req.onerror = () => rej(req.error);
+    });
+  }
+};
 
-// ══════════════════════════════
+// ════════════════════════════════
+// UTILITIES
+// ════════════════════════════════
+function todayStr() { return new Date().toISOString().slice(0,10); }
+function todayIdx() { return [6,0,1,2,3,4,5][new Date().getDay()]; }
+function e1rm(w, r) {
+  if(!w || w<=0 || !r || r<=0) return 0;
+  if(r===1) return w;
+  return Math.round(w * (1 + r/30) * 10) / 10;
+}
+function fmtVol(v) {
+  if(v >= 1000) return (v/1000).toFixed(1)+'t';
+  return Math.round(v)+'kg';
+}
+function fmtDate(d) {
+  return new Date(d+'T12:00:00').toLocaleDateString('id-ID',{day:'numeric',month:'short'});
+}
+let toastT;
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(toastT); toastT = setTimeout(()=>el.classList.remove('show'), 2800);
+}
+
+// ════════════════════════════════
 // NAV
-// ══════════════════════════════
-function goTo(id,btn){
+// ════════════════════════════════
+function goTo(id, btn) {
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
   document.getElementById('s-'+id).classList.add('active');
-  btn.classList.add('active');
-  if(id==='hari') renderHari();
-  if(id==='log'){renderLog();renderPR();populateChartSelect();}
+  btn.classList.add('on');
+  if(id==='latihan') renderLatihan();
+  if(id==='jadwal') renderJadwal();
+  if(id==='progres') renderProgres();
   if(id==='setting') renderSetting();
 }
 
-// ══════════════════════════════
-// JADWAL
-// ══════════════════════════════
-let activeDay=0;
-function initJadwal(){
+// ════════════════════════════════
+// REST TIMER
+// ════════════════════════════════
+const ARC = 2*Math.PI*18; // ~113
+let tSec=90, tTotal=90, tRun=false, tInt=null;
+
+function startTimer(sec) {
+  clearInterval(tInt); tSec=sec; tTotal=sec; tRun=true;
+  document.getElementById('timerBanner').classList.add('show');
+  tInt = setInterval(tickTimer, 1000);
+  updTimerUI();
+}
+function tickTimer() {
+  tSec--;
+  if(tSec<=0) { tSec=0; updTimerUI(); finishTimer(); return; }
+  updTimerUI();
+}
+function finishTimer() {
+  clearInterval(tInt); tRun=false;
+  document.getElementById('timerBanner').classList.remove('show');
+  beep(); if(navigator.vibrate) navigator.vibrate([200,80,200]);
+  toast('💪 Rest selesai — lanjut set berikutnya!');
+}
+function skipTimer() {
+  clearInterval(tInt); tRun=false;
+  document.getElementById('timerBanner').classList.remove('show');
+}
+function updTimerUI() {
+  const m=Math.floor(tSec/60), s=tSec%60;
+  document.getElementById('tbTime').textContent = String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  document.getElementById('tbNum').textContent = tSec;
+  const ratio = tTotal>0 ? tSec/tTotal : 0;
+  document.getElementById('tbArc').setAttribute('stroke-dashoffset', ARC*(1-ratio));
+  document.getElementById('tbArc').setAttribute('stroke', tSec<=10?'#EF4444':tSec<=30?'#F59E0B':'#FF6B35');
+}
+function beep() {
+  try {
+    const ctx=new(AudioContext||webkitAudioContext)();
+    [0,.25,.5].forEach(t=>{
+      const o=ctx.createOscillator(),g=ctx.createGain();
+      o.connect(g);g.connect(ctx.destination);o.frequency.value=880;o.type='sine';
+      g.gain.setValueAtTime(.3,ctx.currentTime+t);
+      g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+t+.2);
+      o.start(ctx.currentTime+t);o.stop(ctx.currentTime+t+.25);
+    });
+  } catch(e) {}
+}
+
+// ════════════════════════════════
+// LATIHAN SCREEN
+// ════════════════════════════════
+let todaySets = [];   // cached sets for today
+let prevSessions = {}; // cached prev session per exercise
+
+async function renderLatihan() {
+  const d = DAYS[todayIdx()];
+  document.getElementById('lhTitle').textContent = d.day.toUpperCase()+' — '+d.label;
+  document.getElementById('lhSub').textContent = d.tag;
+
+  // Load today's sets
+  todaySets = await DB.getByIndex('sets','date',todayStr());
+
+  // Consistency
+  const cons = await calcConsistency();
+  document.getElementById('consPct').textContent = cons.pct+'%';
+  document.getElementById('consPct').style.color = cons.pct>=80?'var(--green)':cons.pct>=50?'var(--gold)':'var(--red)';
+  document.getElementById('consFill').style.width = cons.pct+'%';
+  document.getElementById('consFill').style.background = cons.pct>=80?'var(--green)':cons.pct>=50?'var(--gold)':'var(--red)';
+
+  // Hero
+  const rec = d.recovery ? `<div class="rec-pill"><div class="rec-lbl">Recovery</div><div class="rec-val" style="color:${d.color}">${d.recovery}</div></div>` : '';
+  document.getElementById('dayHero').innerHTML = `
+    <div class="day-hero" style="border-bottom:1px solid ${d.color}22">
+      <div class="day-hero-top">
+        <div>
+          <div class="day-label" style="color:${d.color}">${d.day}</div>
+          <div class="day-name">${d.label}</div>
+          <div class="day-tag">${d.tag}</div>
+        </div>${rec}
+      </div>
+      <div class="day-focus"><b style="color:${d.color}">Fokus:</b>${d.focus}</div>
+    </div>`;
+
+  // Load prev sessions for each exercise
+  const exNames = d.exercises.map(e=>e.name);
+  prevSessions = {};
+  await Promise.all(exNames.map(async name => {
+    const all = await DB.getByIndex('sets','exName',name);
+    const prev = all.filter(s=>s.date<todayStr()).sort((a,b)=>b.date.localeCompare(a.date));
+    if(prev.length>0) {
+      const lastDate = prev[0].date;
+      prevSessions[name] = prev.filter(s=>s.date===lastDate);
+    }
+  }));
+
+  // Build exercise list
+  const exCards = d.exercises.map((ex,i) => buildExCard(ex, i, d)).join('');
+  document.getElementById('exList').innerHTML = exCards;
+
+  // Finisher
+  document.getElementById('finisherRow').innerHTML = d.functional
+    ? `<div class="finisher-row" style="margin:0 14px 6px;border-radius:10px;border:1px solid ${d.color}44">
+        <div class="finisher-icon">🔗</div>
+        <div>
+          <div class="finisher-label" style="color:${d.color}">Grip Functional Finisher</div>
+          <div class="finisher-text">${d.functional}</div>
+        </div>
+      </div>` : '';
+
+  updateWorkoutProgress(d);
+}
+
+function buildExCard(ex, idx, d) {
+  if(ex.sets===0) {
+    return `<div class="ex-card">
+      <div class="ex-card-header" style="cursor:default">
+        <div class="ex-check" style="border-color:var(--dim)">—</div>
+        <div class="ex-main">
+          <div class="ex-name">${ex.name}</div>
+          <div class="ex-prev" style="color:var(--dim)">Free form / tidak di-track</div>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  const exSets = todaySets.filter(s=>s.exerciseName===ex.name);
+  const prev = prevSessions[ex.name];
+  const isDone = exSets.length >= ex.sets;
+  const hasPartial = exSets.length > 0 && !isDone;
+
+  // Status
+  const checkClass = isDone?'done':hasPartial?'partial':'';
+  const checkIcon = isDone?'✓':hasPartial?exSets.length:'';
+  const badgeClass = isDone?'done':hasPartial?'partial':'';
+  const badgeText = ex.sets>0 ? (isDone?'Selesai':exSets.length+'/'+ex.sets+' set') : '';
+
+  // Prev summary
+  let prevText = 'Belum ada data sebelumnya';
+  if(prev&&prev.length>0) {
+    const w = prev[0].isBodyweight ? 'BW' : prev[0].weight+'kg';
+    const reps = [...new Set(prev.map(s=>s.reps))];
+    const rStr = reps.length===1?reps[0]+'rep':reps[0]+'–'+reps[reps.length-1]+'rep';
+    prevText = `${prev.length}×${rStr} @ ${w} · ${fmtDate(prev[0].date)}`;
+  }
+
+  return `<div class="ex-card${isDone?' open':''}" id="excard-${idx}">
+    <div class="ex-card-header" onclick="toggleExCard(${idx})">
+      <div class="ex-check ${checkClass}">${checkIcon}</div>
+      <div class="ex-main">
+        <div class="ex-name">${ex.name}${ex.note?` <span style="font-size:10px;color:${d.color};background:${d.color}18;padding:1px 5px;border-radius:3px">${ex.note}</span>`:''}</div>
+        <div class="ex-prev">${prevText}</div>
+      </div>
+      <div class="ex-sets-badge ${badgeClass}">${badgeText}</div>
+      <div class="ex-chevron">▾</div>
+    </div>
+    <div class="ex-body" id="exbody-${idx}">
+      ${buildExBody(ex, idx, d)}
+    </div>
+  </div>`;
+}
+
+function buildExBody(ex, idx, d) {
+  const exSets = todaySets.filter(s=>s.exerciseName===ex.name);
+  const prev = prevSessions[ex.name];
+  let html = '';
+
+  // Previous session detail
+  if(prev&&prev.length>0) {
+    const vol = prev.reduce((sum,s)=>sum+(s.volume||0),0);
+    const pills = prev.map((s,i)=>`<div class="ex-prev-set-pill">Set ${i+1}: ${s.reps}r${s.isBodyweight?'':`@${s.weight}kg`}</div>`).join('');
+    html += `<div class="ex-prev-detail">
+      <div class="ex-prev-title">Sesi Sebelumnya — ${fmtDate(prev[0].date)}</div>
+      <div class="ex-prev-sets">${pills}</div>
+      ${vol>0?`<div class="ex-prev-vol">Total volume: <b style="color:var(--muted)">${fmtVol(vol)}</b></div>`:''}
+    </div>`;
+
+    // Auto-progression suggestion
+    if(!ex.bodyweight && prev.length>0 && ex.targetReps) {
+      const minReps = Math.min(...prev.map(s=>s.reps));
+      const prevW = prev[0].weight;
+      if(minReps >= ex.targetReps && prevW>0) {
+        const suggestW = prevW + 2.5;
+        html += `<div class="ex-suggestion">💡 Semua reps tercapai sesi lalu! Coba <b>${suggestW}kg</b> hari ini.</div>`;
+      }
+    }
+  }
+
+  // Today's logged sets
+  if(exSets.length>0) {
+    const rows = exSets.map((s,i)=>{
+      const valStr = s.isBodyweight ? `${s.reps} rep — Bodyweight` : `${s.reps} rep @ ${s.weight}kg`;
+      const e1rmStr = s.e1rm>0 ? ` · e1RM: ${s.e1rm}kg` : '';
+      return `<div class="today-set-row">
+        <div class="set-num" style="color:var(--green)">Set ${i+1}</div>
+        <div class="set-val">${valStr}<span style="color:var(--dim);font-size:11px">${e1rmStr}</span></div>
+        <button class="set-del" onclick="deleteSet(${s.id},${idx})">✕</button>
+      </div>`;
+    }).join('');
+    html += `<div class="today-sets">${rows}</div>`;
+  }
+
+  // Input form (if not done yet)
+  const isDone = exSets.length >= ex.sets;
+  if(!isDone) {
+    const nextSet = exSets.length+1;
+    const defReps = prev&&prev.length>0 ? (prev[nextSet-1]||prev[0]).reps : '';
+    const defW = prev&&prev.length>0 && !prev[0].isBodyweight ? (prev[nextSet-1]||prev[0]).weight : '';
+    const isBW = ex.bodyweight || (prev&&prev[0]&&prev[0].isBodyweight);
+
+    html += `<div>
+      <div style="font-size:11px;color:var(--dim);margin-bottom:8px">Set ${nextSet} dari ${ex.sets}</div>
+      ${!ex.bodyweight?`<label class="bw-toggle" onclick="toggleBW(${idx})">
+        <div class="bw-cb ${isBW?'on':''}" id="bwcb-${idx}">${isBW?'✓':''}</div>
+        <span class="bw-label">Bodyweight (tanpa beban tambahan)</span>
+      </label>`:''}
+      <div class="set-input-row">
+        <div class="set-input-group">
+          <div class="set-input-label">Repetisi</div>
+          <input type="number" id="repIn-${idx}" class="set-input" value="${defReps}" placeholder="${ex.reps}" min="1" max="100">
+          <div class="set-input-unit">rep</div>
+        </div>
+        <div class="set-input-group" id="wGrp-${idx}" ${isBW||ex.bodyweight?'style="opacity:.3;pointer-events:none"':''}>
+          <div class="set-input-label">Berat</div>
+          <input type="number" id="wIn-${idx}" class="set-input" value="${defW}" placeholder="kg" min="0" max="500" step="0.5">
+          <div class="set-input-unit">kg</div>
+        </div>
+      </div>
+      <button class="btn bp bf" onclick="logSet(${idx})" style="padding:12px">+ Log Set ${nextSet}</button>
+    </div>`;
+  } else {
+    html += `<div style="text-align:center;padding:8px 0;font-size:13px;color:var(--green)">✓ Semua ${ex.sets} set selesai!</div>`;
+  }
+
+  return html;
+}
+
+function toggleExCard(idx) {
+  const card = document.getElementById('excard-'+idx);
+  card.classList.toggle('open');
+}
+
+function toggleBW(idx) {
+  const cb = document.getElementById('bwcb-'+idx);
+  const isBW = !cb.classList.contains('on');
+  cb.classList.toggle('on', isBW);
+  cb.textContent = isBW ? '✓' : '';
+  const wGrp = document.getElementById('wGrp-'+idx);
+  if(wGrp) { wGrp.style.opacity = isBW?'.3':'1'; wGrp.style.pointerEvents = isBW?'none':''; }
+}
+
+async function logSet(exIdx) {
+  const d = DAYS[todayIdx()];
+  const ex = d.exercises[exIdx];
+  const repsEl = document.getElementById('repIn-'+exIdx);
+  const wEl = document.getElementById('wIn-'+exIdx);
+  const bwEl = document.getElementById('bwcb-'+exIdx);
+
+  const reps = parseInt(repsEl.value);
+  if(!reps || reps<1) { toast('⚠️ Masukkan jumlah rep'); repsEl.focus(); return; }
+
+  const isBW = ex.bodyweight || (bwEl && bwEl.classList.contains('on'));
+  const weight = isBW ? 0 : parseFloat(wEl?wEl.value:0)||0;
+  const volume = isBW ? 0 : reps * weight;
+  const calcE1rm = isBW ? 0 : e1rm(weight, reps);
+  const exSets = todaySets.filter(s=>s.exerciseName===ex.name);
+  const setNum = exSets.length + 1;
+
+  const setData = {
+    exerciseName: ex.name, date: todayStr(),
+    setNum, reps, weight, isBodyweight: isBW,
+    volume, e1rm: calcE1rm, timestamp: Date.now()
+  };
+
+  const id = await DB.add('sets', setData);
+  setData.id = id;
+  todaySets.push(setData);
+
+  // PR check
+  if(!isBW && weight>0) await checkPR(ex.name, weight, reps, calcE1rm);
+
+  // Start rest timer
+  startTimer(d.restSec || 90);
+
+  // Refresh card
+  const card = document.getElementById('excard-'+exIdx);
+  const body = document.getElementById('exbody-'+exIdx);
+  const header = card.querySelector('.ex-card-header');
+  const newExSets = todaySets.filter(s=>s.exerciseName===ex.name);
+  const isDone = newExSets.length >= ex.sets;
+
+  // Update check icon
+  const chk = card.querySelector('.ex-check');
+  chk.className = 'ex-check'+(isDone?' done':' partial');
+  chk.textContent = isDone ? '✓' : newExSets.length;
+
+  // Update badge
+  const badge = card.querySelector('.ex-sets-badge');
+  badge.className = 'ex-sets-badge'+(isDone?' done':' partial');
+  badge.textContent = isDone ? 'Selesai' : newExSets.length+'/'+ex.sets+' set';
+
+  // Rebuild body
+  body.innerHTML = buildExBody(ex, exIdx, d);
+  card.classList.add('open');
+
+  updateWorkoutProgress(d);
+  toast('✅ Set '+setNum+' tercatat!');
+}
+
+async function deleteSet(id, exIdx) {
+  await DB.del('sets', id);
+  todaySets = todaySets.filter(s=>s.id!==id);
+  const d = DAYS[todayIdx()];
+  const ex = d.exercises[exIdx];
+  const card = document.getElementById('excard-'+exIdx);
+  const body = document.getElementById('exbody-'+exIdx);
+  const newExSets = todaySets.filter(s=>s.exerciseName===ex.name);
+  const isDone = newExSets.length >= ex.sets;
+  const hasPartial = newExSets.length>0&&!isDone;
+  const chk = card.querySelector('.ex-check');
+  chk.className='ex-check'+(isDone?' done':hasPartial?' partial':'');
+  chk.textContent=isDone?'✓':hasPartial?newExSets.length:'';
+  const badge=card.querySelector('.ex-sets-badge');
+  badge.className='ex-sets-badge'+(isDone?' done':hasPartial?' partial':'');
+  badge.textContent=ex.sets>0?(isDone?'Selesai':newExSets.length+'/'+ex.sets+' set'):'';
+  body.innerHTML=buildExBody(ex,exIdx,d);
+  updateWorkoutProgress(d);
+  toast('🗑️ Set dihapus');
+}
+
+function updateWorkoutProgress(d) {
+  const trackable = d.exercises.filter(e=>e.sets>0);
+  const done = trackable.filter(ex => {
+    return todaySets.filter(s=>s.exerciseName===ex.name).length >= ex.sets;
+  }).length;
+  const pct = trackable.length>0 ? Math.round(done/trackable.length*100) : 0;
+  document.getElementById('wkFill').style.width = pct+'%';
+  document.getElementById('wkCount').textContent = done+'/'+trackable.length+' exercise';
+
+  // Show done button if any exercise completed
+  const doneBtn = document.getElementById('doneBtn');
+  doneBtn.style.display = done>0 ? 'flex' : 'none';
+  doneBtn.style.background = done===trackable.length ? 'var(--green)' : 'var(--push)';
+  doneBtn.textContent = done===trackable.length ? '🏁 Workout Selesai Semua!' : `🏁 Selesaikan Workout (${done}/${trackable.length})`;
+}
+
+async function finishWorkout() {
+  const d = DAYS[todayIdx()];
+  const trackable = d.exercises.filter(e=>e.sets>0);
+  const done = trackable.filter(ex=>todaySets.filter(s=>s.exerciseName===ex.name).length>=ex.sets).length;
+  const totalVol = todaySets.reduce((sum,s)=>sum+(s.volume||0),0);
+  const totalSets = todaySets.length;
+
+  // Mark as trained
+  await DB.setSetting('trained_'+todayStr(), 1);
+  skipTimer();
+
+  document.getElementById('doStats').innerHTML = `
+    <div class="do-stat"><div class="do-stat-val">${done}/${trackable.length}</div><div class="do-stat-lbl">Exercise</div></div>
+    <div class="do-stat"><div class="do-stat-val">${totalSets}</div><div class="do-stat-lbl">Total Set</div></div>
+    <div class="do-stat"><div class="do-stat-val">${fmtVol(totalVol)}</div><div class="do-stat-lbl">Volume</div></div>`;
+  document.getElementById('dov').classList.add('show');
+  if(navigator.vibrate) navigator.vibrate([100,50,100,50,300]);
+}
+
+// ════════════════════════════════
+// PR SYSTEM
+// ════════════════════════════════
+async function checkPR(name, weight, reps, calcE1rm) {
+  const key = 'pr_'+name;
+  const existing = await DB.getSetting(key);
+  if(!existing || weight > existing.weight) {
+    const old = existing;
+    await DB.setSetting(key, {weight, reps, e1rm:calcE1rm, date:todayStr()});
+    setTimeout(()=>showPR(name, weight, calcE1rm, old), 600);
+  }
+}
+
+function showPR(name, w, er, old) {
+  document.getElementById('poEx').textContent = name;
+  document.getElementById('poVal').textContent = w+'kg';
+  document.getElementById('poE1rm').textContent = er>0 ? `e1RM estimasi: ${er}kg` : '';
+  document.getElementById('prov').classList.add('show');
+  if(navigator.vibrate) navigator.vibrate([100,50,100,50,300,100,300]);
+}
+
+// ════════════════════════════════
+// CONSISTENCY
+// ════════════════════════════════
+async function calcConsistency(weeks=4) {
+  const allTrainedDays = [];
+  for(let i=0; i<weeks*7; i++) {
+    const d=new Date(); d.setDate(d.getDate()-i);
+    const ds=d.toISOString().slice(0,10);
+    const dayOfWeek=[6,0,1,2,3,4,5][d.getDay()];
+    if(dayOfWeek===6) continue; // skip rest day
+    const trained = await DB.getSetting('trained_'+ds) ||
+      (await DB.getByIndex('sets','date',ds)).length > 0;
+    allTrainedDays.push({date:ds, trained:!!trained});
+  }
+  const expected=allTrainedDays.length;
+  const done=allTrainedDays.filter(d=>d.trained).length;
+  return {pct:expected>0?Math.round(done/expected*100):0, done, expected, days:allTrainedDays};
+}
+
+// ════════════════════════════════
+// JADWAL SCREEN
+// ════════════════════════════════
+let jadwalDay=0;
+function initJadwal() {
   const tabs=document.getElementById('dayTabs');
   DAYS.forEach((d,i)=>{
     const btn=document.createElement('button');
-    btn.className='dt';
-    btn.textContent=d.day;
-    if(i===0){btn.style.borderColor=d.color;btn.style.color=d.color;btn.style.background=d.color+'22';}
+    btn.className='dt'; btn.textContent=d.day;
+    if(i===todayIdx()){btn.style.borderColor=d.color;btn.style.color=d.color;btn.style.background=d.color+'22';jadwalDay=i;}
     btn.addEventListener('click',()=>{
       document.querySelectorAll('.dt').forEach(b=>{b.style.borderColor='#1E1E2E';b.style.color='#777';b.style.background='';});
       btn.style.borderColor=d.color;btn.style.color=d.color;btn.style.background=d.color+'22';
-      activeDay=i;renderDay();
+      jadwalDay=i; renderJadwalPanel();
     });
     tabs.appendChild(btn);
   });
-  renderDay();
 }
-function renderDay(){
-  const d=DAYS[activeDay];
-  const rec=d.recovery?`<div class="rb"><div class="rl">Recovery</div><div class="rv" style="color:${d.color}">${d.recovery}</div></div>`:'';
-  const rows=d.exercises.map(ex=>`<div class="exr">
-    <div class="exn">${ex.name}${ex.note?`<span class="exb" style="background:${d.color}22;color:${d.color}">${ex.note}</span>`:''}</div>
-    <div class="exs${ex.sets==='—'?' e':''}">${ex.sets}</div>
-    <div class="exrp${ex.reps==='—'?' e':''}" style="color:${ex.reps==='—'?'':d.color}">${ex.reps}</div>
+function renderJadwal() { renderJadwalPanel(); }
+function renderJadwalPanel() {
+  const d=DAYS[jadwalDay];
+  const rec=d.recovery?`<div class="rec-pill"><div class="rec-lbl">Recovery</div><div class="rec-val" style="color:${d.color}">${d.recovery}</div></div>`:'';
+  const rows=d.exercises.map(ex=>`<div class="jexr">
+    <div class="jexn">${ex.name}${ex.note?`<span class="jexb" style="background:${d.color}22;color:${d.color}">${ex.note}</span>`:''}</div>
+    <div class="jexs${ex.sets===0?' e':''}">${ex.sets||'—'}</div>
+    <div class="jexrp${ex.reps==='—'?' e':''}" style="color:${ex.reps==='—'?'':d.color}">${ex.reps}</div>
   </div>`).join('');
-  const fin=d.functional?`<div class="fin" style="background:${d.color}15;border-color:${d.color}44">
-    <div><div class="fl" style="color:${d.color}">🔗 Grip Functional Finisher</div><div class="ft">${d.functional}</div></div>
+  const fin=d.functional?`<div class="jfin" style="background:${d.color}15;border-color:${d.color}44">
+    <div><div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:${d.color};margin-bottom:2px">🔗 Grip Finisher</div>
+    <div style="font-size:12px;color:#ccc">${d.functional}</div></div>
   </div>`:'';
-  document.getElementById('dayPanel').innerHTML=`
-    <div class="dcard" style="background:${d.color}18;border-color:${d.color}44">
-      <div class="dctop"><div>
-        <div class="dns" style="color:${d.color}">${d.day}</div>
-        <div class="dnm">${d.label}</div>
-        <div class="dnt">${d.tag}</div>
+  document.getElementById('jadwalPanel').innerHTML=`
+    <div class="jcard" style="background:${d.color}18;border-color:${d.color}44">
+      <div class="jctop"><div>
+        <div class="jns" style="color:${d.color}">${d.day}</div>
+        <div class="jnm">${d.label}</div>
+        <div class="jnt">${d.tag}</div>
       </div>${rec}</div>
-      <div class="df" style="border-top:1px solid ${d.color}33"><b style="color:${d.color}">Fokus:</b>${d.focus}</div>
+      <div class="jf" style="border-top:1px solid ${d.color}33"><b style="color:${d.color}">Fokus:</b>${d.focus}</div>
     </div>
-    <div class="ext"><div class="exh"><span>Latihan</span><span>Set</span><span>Rep</span></div>${rows}</div>${fin}`;
+    <div class="jext"><div class="jexh"><span>Latihan</span><span>Set</span><span>Rep</span></div>${rows}</div>${fin}`;
 }
 
-// ══════════════════════════════
-// STREAK
-// ══════════════════════════════
-function todayStr(){return new Date().toISOString().slice(0,10)}
-function markTrained(){
-  // mark today as trained if at least 1 exercise done
-  const c=get('wt_ck_'+todayStr(),{});
-  const d=DAYS[todayIdx()];
-  const anyDone=d.exercises.some((_,k)=>c[k]);
-  if(anyDone) set('wt_tr_'+todayStr(),1);
-}
-function calcStreak(){
-  let streak=0,best=get('wt_best_streak',0);
-  const today=new Date();
-  for(let i=0;i<365;i++){
-    const d=new Date(today);d.setDate(d.getDate()-i);
-    const key='wt_tr_'+d.toISOString().slice(0,10);
-    // skip rest day (Minggu = index 6)
-    const dayOfWeek=[6,0,1,2,3,4,5][d.getDay()];
-    if(dayOfWeek===6){continue;} // skip Sunday from streak calc
-    if(get(key,0)){streak++;}
-    else if(i>0){break;}
-  }
-  if(streak>best){best=streak;set('wt_best_streak',best);}
-  return{streak,best};
-}
+// ════════════════════════════════
+// PROGRES SCREEN
+// ════════════════════════════════
+let chartType = 'weight';
 
-// ══════════════════════════════
-// HARI INI
-// ══════════════════════════════
-function todayIdx(){return[6,0,1,2,3,4,5][new Date().getDay()]}
-function getChecks(){return get('wt_ck_'+todayStr(),{})}
-function saveChecks(c){set('wt_ck_'+todayStr(),c);}
-function renderHari(){
-  const i=todayIdx(),d=DAYS[i],c=getChecks();
-  document.getElementById('hariTitle').textContent=d.day.toUpperCase()+' – '+d.label;
-  document.getElementById('hariSub').textContent=d.tag;
-  const done=d.exercises.filter((_,k)=>c[k]).length,tot=d.exercises.length;
-  document.getElementById('progCount').textContent=done+'/'+tot;
-  document.getElementById('progBar').style.width=(tot?Math.round(done/tot*100):0)+'%';
-  document.getElementById('progBar').style.background=d.color;
-  // Streak
-  const {streak,best}=calcStreak();
-  document.getElementById('streakNum').textContent=streak;
-  document.getElementById('streakBest').textContent='Rekor terbaik: '+best+' hari';
-  // Checklist
-  document.getElementById('checkList').innerHTML=d.exercises.map((ex,k)=>`
-    <div class="ci${c[k]?' done':''}" onclick="toggleCheck(${k})">
-      <div class="cbox" style="${c[k]?'background:'+d.color+';border-color:'+d.color:'border-color:'+d.color+'77'}">${c[k]?'✓':''}</div>
-      <div class="cinfo">
-        <div class="exn">${ex.name}</div>
-        <div class="csets">${ex.sets!=='—'?ex.sets+' set × '+ex.reps:'—'}</div>
-      </div>
-    </div>`).join('');
-}
-function toggleCheck(k){
-  const c=getChecks();c[k]=!c[k];saveChecks(c);
-  markTrained();renderHari();
-  const d=DAYS[todayIdx()];
-  if(d.exercises.filter((_,j)=>c[j]).length===d.exercises.length)
-    setTimeout(()=>toast('🎉 Semua latihan selesai! Luar biasa!'),200);
-}
-function resetChecklist(){
-  if(!confirm('Reset checklist hari ini?'))return;
-  localStorage.removeItem('wt_ck_'+todayStr());
-  renderHari();toast('↺ Checklist direset');
-}
-
-// ══════════════════════════════
-// TIMER
-// ══════════════════════════════
-const ARC=2*Math.PI*88;
-let tSec=90,tTotal=90,tRun=false,tInt=null;
-function initTimer(){
-  document.querySelectorAll('.pre').forEach(btn=>{
-    btn.addEventListener('click',()=>{
-      document.querySelectorAll('.pre').forEach(b=>b.classList.remove('sel'));
-      btn.classList.add('sel');setTimer(+btn.dataset.sec);
-    });
+function switchProg(tab) {
+  ['kons','pr','chart','vol'].forEach(t=>{
+    document.getElementById('p'+t.charAt(0).toUpperCase()+t.slice(1)).style.display=t===tab?'block':'none';
+    document.getElementById('tp'+t.charAt(0).toUpperCase()+t.slice(1)).classList.toggle('on',t===tab);
   });
-  setTimer(90);
+  if(tab==='kons') renderKons();
+  if(tab==='pr') renderPR();
+  if(tab==='chart') { populateChartSel(); renderChart(); }
+  if(tab==='vol') renderVol();
 }
-function setTimer(s){clearInterval(tInt);tRun=false;tSec=s;tTotal=s;document.getElementById('btnStart').textContent='Mulai';document.getElementById('tStat').textContent='Siap';updTimer();}
-function setCustom(){const v=+document.getElementById('cSec').value;if(!v||v<1){toast('⚠️ Masukkan durasi valid');return;}document.querySelectorAll('.pre').forEach(b=>b.classList.remove('sel'));setTimer(v);document.getElementById('cSec').value='';}
-function toggleTimer(){
-  if(tRun){clearInterval(tInt);tRun=false;document.getElementById('btnStart').textContent='Lanjut';document.getElementById('tStat').textContent='Dijeda';}
-  else{if(tSec<=0){setTimer(tTotal);return;}tRun=true;document.getElementById('btnStart').textContent='Jeda';document.getElementById('tStat').textContent='Berjalan...';tInt=setInterval(tick,1000);}
-}
-function tick(){tSec--;if(tSec<=0){tSec=0;clearInterval(tInt);tRun=false;document.getElementById('btnStart').textContent='Mulai Lagi';document.getElementById('tStat').textContent='Selesai! 💪';updTimer();timerDone();return;}updTimer();}
-function resetTimer(){clearInterval(tInt);tRun=false;tSec=tTotal;document.getElementById('btnStart').textContent='Mulai';document.getElementById('tStat').textContent='Siap';updTimer();}
-function updTimer(){
-  const m=Math.floor(tSec/60),s=tSec%60;
-  document.getElementById('tDisp').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
-  const ratio=tTotal>0?tSec/tTotal:0;
-  document.getElementById('tArc').setAttribute('stroke-dashoffset',ARC*(1-ratio));
-  document.getElementById('tArc').setAttribute('stroke',tSec<=10?'#EF4444':tSec<=30?'#F59E0B':'#FF6B35');
-}
-function timerDone(){beep();if(navigator.vibrate)navigator.vibrate([300,100,300]);document.getElementById('dov').classList.add('show');}
-function dismissDone(){document.getElementById('dov').classList.remove('show');setTimer(tTotal);document.querySelectorAll('.pre').forEach(b=>{if(+b.dataset.sec===tTotal)b.classList.add('sel');else b.classList.remove('sel');});}
-function beep(){try{const ctx=new(window.AudioContext||window.webkitAudioContext)();[0,.3,.6].forEach(t=>{const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.value=880;o.type='sine';g.gain.setValueAtTime(.4,ctx.currentTime+t);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+t+.25);o.start(ctx.currentTime+t);o.stop(ctx.currentTime+t+.3);});}catch(e){}}
 
-// ══════════════════════════════
-// LOG
-// ══════════════════════════════
-function getLogs(){return get('wt_logs',[])}
-function saveLogs(l){set('wt_logs',l);}
-function getPRs(){return get('wt_prs',{})}
-function savePRs(p){set('wt_prs',p);}
+async function renderProgres() { renderKons(); }
 
-function addLog(){
-  const name=document.getElementById('logEx').value.trim();
-  const sr=document.getElementById('logSR').value.trim();
-  const w=parseFloat(document.getElementById('logW').value)||0;
-  const note=document.getElementById('logNote').value.trim();
-  if(!name){toast('⚠️ Nama latihan wajib diisi');return;}
-  // PR check
-  let isPR=false;
-  if(w>0){
-    const prs=getPRs();
-    if(!prs[name]||w>prs[name].w){
-      const old=prs[name]?prs[name].w:null;
-      prs[name]={w,date:todayStr()};
-      savePRs(prs);isPR=true;
-      setTimeout(()=>showPR(name,w,old),400);
+async function renderKons() {
+  const weeks=[];
+  for(let w=0;w<4;w++) {
+    const days=[];
+    for(let d=0;d<7;d++) {
+      const dt=new Date(); dt.setDate(dt.getDate()-(w*7+d));
+      const ds=dt.toISOString().slice(0,10);
+      const dayIdx=[6,0,1,2,3,4,5][dt.getDay()];
+      if(dayIdx===6){days.push({date:ds,rest:true});continue;}
+      const trained=await DB.getSetting('trained_'+ds)||(await DB.getByIndex('sets','date',ds)).length>0;
+      days.push({date:ds,trained:!!trained,rest:false});
     }
+    const expected=days.filter(d=>!d.rest).length;
+    const done=days.filter(d=>d.trained).length;
+    weeks.push({days,expected,done,pct:expected>0?Math.round(done/expected*100):0});
   }
-  const logs=getLogs();
-  logs.unshift({id:Date.now(),date:todayStr(),name,sr,w:w||null,note,isPR});
-  saveLogs(logs);
-  ['logEx','logSR','logW','logNote'].forEach(id=>document.getElementById(id).value='');
-  renderLog();if(!isPR)toast('✅ Log ditambahkan!');
-}
-
-function showPR(name,w,old){
-  document.getElementById('prExName').textContent=name;
-  document.getElementById('prNewVal').textContent=w+'kg'+(old?' (+'+Math.round((w-old)*10)/10+'kg)':'');
-  document.getElementById('prov').classList.add('show');
-  if(navigator.vibrate)navigator.vibrate([100,50,100,50,300]);
-}
-
-function deleteLog(id){
-  saveLogs(getLogs().filter(l=>l.id!==id));
-  renderLog();renderPR();populateChartSelect();toast('🗑️ Log dihapus');
-}
-
-function renderLog(){
-  const logs=getLogs();
-  const el=document.getElementById('logList');
-  // Populate datalist
-  const names=[...new Set(logs.map(l=>l.name))];
-  document.getElementById('exList').innerHTML=names.map(n=>`<option value="${n}">`).join('');
-  if(!logs.length){el.innerHTML='<div class="lempty">Belum ada log.<br>Mulai catat latihanmu! 💪</div>';return;}
-  const grouped={};
-  logs.forEach(l=>{if(!grouped[l.date])grouped[l.date]=[];grouped[l.date].push(l);});
-  el.innerHTML=Object.entries(grouped).map(([date,entries])=>{
-    const label=new Date(date+'T12:00:00').toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long'});
-    const rows=entries.map(e=>`<div class="lentry">
-      <div style="flex:1">
-        <div class="lname">${e.name}${e.isPR?'<span class="pr-badge">🏆 PR</span>':''}</div>
-        <div class="ldet">${e.sr?'<b>'+e.sr+'</b>':''} ${e.w?'· '+e.w+'kg':''} ${e.note?'· <i>'+e.note+'</i>':''}</div>
-      </div>
-      <button class="ldel" onclick="deleteLog(${e.id})">✕</button>
+  const col=p=>p>=80?'var(--green)':p>=50?'var(--gold)':'var(--red)';
+  const wLabels=['Minggu Ini','Minggu Lalu','2M lalu','3M lalu'];
+  document.getElementById('weekGrid').innerHTML=weeks.map((w,i)=>`
+    <div class="week-card">
+      <div class="week-num">${wLabels[i]}</div>
+      <div class="week-pct" style="color:${col(w.pct)}">${w.pct}%</div>
+      <div style="font-size:10px;color:var(--dim)">${w.done}/${w.expected}hr</div>
+      <div class="week-bar-bg"><div class="week-bar-fill" style="width:${w.pct}%;background:${col(w.pct)}"></div></div>
     </div>`).join('');
-    return`<div class="ldg"><div class="ldl">${label}</div>${rows}</div>`;
-  }).join('');
-}
 
-function renderPR(){
-  const prs=getPRs();
-  const el=document.getElementById('prList');
-  const entries=Object.entries(prs);
-  if(!entries.length){el.innerHTML='<div class="lempty" style="padding:20px 0">Belum ada PR.<br>Catat beban di log untuk tracking PR! 🏆</div>';return;}
-  entries.sort((a,b)=>a[0].localeCompare(b[0]));
-  el.innerHTML=entries.map(([name,{w,date}])=>{
-    const d=new Date(date+'T12:00:00').toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'});
-    return`<div class="pr-item">
-      <div class="pr-exname">${name}</div>
-      <div class="pr-val"><div class="pr-weight">${w}kg</div><div class="pr-date">${d}</div></div>
+  // Calendar dots (last 28 days)
+  const calEl=document.getElementById('calGrid');
+  const dayNames=['S','S','R','K','J','S','M'];
+  let calHTML=dayNames.map(d=>`<div style="text-align:center;font-size:9px;color:var(--dim);padding-bottom:2px">${d}</div>`).join('');
+  const allDays=[];
+  for(let i=27;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);allDays.push(d);}
+  // Align to week
+  const firstDow=allDays[0].getDay(); // 0=Sun
+  for(let p=0;p<firstDow;p++) calHTML+=`<div></div>`;
+  for(const dt of allDays){
+    const ds=dt.toISOString().slice(0,10);
+    const dayIdx=[6,0,1,2,3,4,5][dt.getDay()];
+    const isRest=dayIdx===6;
+    const trained=await DB.getSetting('trained_'+ds)||(await DB.getByIndex('sets','date',ds)).length>0;
+    const isToday=ds===todayStr();
+    calHTML+=`<div style="aspect-ratio:1;border-radius:4px;display:flex;align-items:center;justify-content:center;
+      font-size:9px;border:${isToday?'1px solid var(--push)':'1px solid transparent'};
+      background:${isRest?'var(--border)':trained?'var(--green)':'var(--bg3)'}">
+      ${isRest?'':''}${!isRest&&trained?'✓':''}
     </div>`;
-  }).join('');
+  }
+  calEl.innerHTML=calHTML;
 }
 
-// ══════════════════════════════
-// CHART
-// ══════════════════════════════
-function populateChartSelect(){
-  const logs=getLogs();
-  const names=[...new Set(logs.filter(l=>l.w).map(l=>l.name))].sort();
-  const sel=document.getElementById('chartSelect');
-  const cur=sel.value;
-  sel.innerHTML='<option value="">-- Pilih latihan --</option>'+names.map(n=>`<option value="${n}"${n===cur?' selected':''}>${n}</option>`).join('');
-  if(cur) renderChart();
+async function renderPR() {
+  const allSettings=await DB.getAll('settings');
+  const prs=allSettings.filter(s=>s.key.startsWith('pr_'));
+  const el=document.getElementById('prList');
+  if(!prs.length){el.innerHTML='<div style="padding:20px;text-align:center;color:var(--dim);font-size:13px">Belum ada PR.<br>Catat beban di Latihan untuk tracking PR! 🏆</div>';return;}
+  prs.sort((a,b)=>a.key.localeCompare(b.key));
+  el.innerHTML=prs.map(p=>`<div class="pr-row">
+    <div class="pr-exname">${p.key.replace('pr_','')}</div>
+    <div class="pr-right">
+      <div class="pr-w">${p.value.weight}kg</div>
+      ${p.value.e1rm>0?`<div class="pr-e1rm">e1RM: ${p.value.e1rm}kg</div>`:''}
+      <div class="pr-date">${fmtDate(p.value.date)}</div>
+    </div>
+  </div>`).join('');
 }
 
-function renderChart(){
-  const name=document.getElementById('chartSelect').value;
+async function populateChartSel() {
+  const all=await DB.getAll('sets');
+  const names=[...new Set(all.filter(s=>!s.isBodyweight&&s.weight>0).map(s=>s.exerciseName))].sort();
+  const cur=document.getElementById('chartSel').value;
+  document.getElementById('chartSel').innerHTML='<option value="">-- Pilih latihan --</option>'+
+    names.map(n=>`<option value="${n}"${n===cur?' selected':''}>${n}</option>`).join('');
+}
+
+function setChartType(ct, btn) {
+  chartType=ct;
+  document.querySelectorAll('.ct-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  renderChart();
+}
+
+async function renderChart() {
+  const name=document.getElementById('chartSel').value;
   const box=document.getElementById('chartBox');
   if(!name){box.innerHTML='<div class="chart-empty">Pilih latihan untuk melihat grafik</div>';return;}
-  const logs=getLogs().filter(l=>l.name===name&&l.w).reverse();
-  if(logs.length<2){box.innerHTML='<div class="chart-empty">Butuh minimal 2 data untuk grafik</div>';return;}
-  // Build SVG chart
-  const W=box.clientWidth-28||280,H=140;
-  const weights=logs.map(l=>l.w);
-  const dates=logs.map(l=>l.date);
-  const min=Math.min(...weights),max=Math.max(...weights);
-  const range=max-min||1;
-  const pad=14;
-  const xStep=(W-pad*2)/(logs.length-1);
-  const pts=weights.map((w,i)=>{
-    const x=pad+i*xStep;
-    const y=H-pad-(w-min)/range*(H-pad*2);
-    return{x,y,w,d:dates[i]};
+  const all=await DB.getByIndex('sets','exName',name);
+  // Group by date, take max weight per date
+  const byDate={};
+  all.filter(s=>!s.isBodyweight&&s.weight>0).forEach(s=>{
+    if(!byDate[s.date]) byDate[s.date]={date:s.date,sets:[]};
+    byDate[s.date].sets.push(s);
   });
-  const poly=pts.map(p=>`${p.x},${p.y}`).join(' ');
-  const area=`${pts[0].x},${H} `+pts.map(p=>`${p.x},${p.y}`).join(' ')+` ${pts[pts.length-1].x},${H}`;
-  const dots=pts.map((p,i)=>`
-    <circle cx="${p.x}" cy="${p.y}" r="${i===pts.length-1?5:3.5}"
-      fill="${i===pts.length-1?'#FF6B35':'#FF6B3588'}" stroke="#0D0D1A" stroke-width="1.5"/>
-    <text x="${p.x}" y="${p.y-8}" text-anchor="middle" fill="#aaa" font-size="9" font-family="DM Sans">${p.w}kg</text>`).join('');
-  // Y axis labels
-  const yLabels=[min,min+range/2,max].map((v,i)=>{
-    const y=H-pad-(v-min)/range*(H-pad*2);
-    return`<text x="2" y="${y+3}" fill="#555" font-size="9" font-family="DM Sans">${Math.round(v*10)/10}</text>`;
+  const pts=Object.values(byDate).sort((a,b)=>a.date.localeCompare(b.date)).map(d=>{
+    const maxW=Math.max(...d.sets.map(s=>s.weight));
+    const maxE=Math.max(...d.sets.map(s=>s.e1rm||0));
+    const vol=d.sets.reduce((sum,s)=>sum+(s.volume||0),0);
+    return{date:d.date, weight:maxW, e1rm:maxE, volume:vol};
+  });
+  if(pts.length<2){box.innerHTML='<div class="chart-empty">Butuh minimal 2 sesi untuk grafik</div>';return;}
+  const vals=pts.map(p=>p[chartType]);
+  const min=Math.min(...vals),max=Math.max(...vals),range=max-min||1;
+  const W=box.clientWidth-28||280,H=130,pad=16;
+  const xStep=(W-pad*2)/(pts.length-1);
+  const svgPts=pts.map((p,i)=>({x:pad+i*xStep,y:H-pad-(p[chartType]-min)/range*(H-pad*2),...p}));
+  const poly=svgPts.map(p=>`${p.x},${p.y}`).join(' ');
+  const area=`${svgPts[0].x},${H} `+svgPts.map(p=>`${p.x},${p.y}`).join(' ')+` ${svgPts[svgPts.length-1].x},${H}`;
+  const unitMap={weight:'kg',e1rm:'kg',volume:'kg'};
+  const unit=unitMap[chartType];
+  const trend=vals[vals.length-1]-vals[0];
+  const trendTxt=trend>0?`+${Math.round(trend*10)/10}${unit} 📈`:trend<0?`${Math.round(trend*10)/10}${unit} 📉`:'Stabil ➡️';
+  const trendCol=trend>0?'var(--green)':trend<0?'var(--red)':'var(--muted)';
+  const dots=svgPts.map((p,i)=>{
+    const v=chartType==='volume'?fmtVol(p.volume):p[chartType]+unit;
+    return`<circle cx="${p.x}" cy="${p.y}" r="${i===svgPts.length-1?5:3.5}"
+      fill="${i===svgPts.length-1?'var(--push)':'#FF6B3888'}" stroke="#0D0D1A" stroke-width="1.5"/>
+    <text x="${p.x}" y="${p.y-8}" text-anchor="middle" fill="#999" font-size="9" font-family="DM Sans">${i===0||i===svgPts.length-1?v:''}</text>`;
   }).join('');
-  // X axis labels (first and last)
-  const fmtDate=d=>{const dt=new Date(d+'T12:00:00');return dt.getDate()+'/'+(dt.getMonth()+1);};
-  const xLabels=`
-    <text x="${pts[0].x}" y="${H+1}" text-anchor="middle" fill="#555" font-size="9" font-family="DM Sans">${fmtDate(pts[0].d)}</text>
-    <text x="${pts[pts.length-1].x}" y="${H+1}" text-anchor="middle" fill="#555" font-size="9" font-family="DM Sans">${fmtDate(pts[pts.length-1].d)}</text>`;
-  // Trend
-  const trend=weights[weights.length-1]-weights[0];
-  const trendTxt=trend>0?`+${Math.round(trend*10)/10}kg 📈`:trend<0?`${Math.round(trend*10)/10}kg 📉`:'Stabil ➡️';
-  const trendCol=trend>0?'#22C55E':trend<0?'#EF4444':'#888';
-  box.innerHTML=`
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-      <div style="font-size:12px;color:var(--muted)">${logs.length} sesi dicatat</div>
-      <div style="font-size:13px;font-weight:600;color:${trendCol}">${trendTxt}</div>
-    </div>
-    <svg width="100%" height="${H+10}" viewBox="0 0 ${W} ${H+10}" style="overflow:visible">
-      <defs>
-        <linearGradient id="ag" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#FF6B35" stop-opacity=".3"/>
-          <stop offset="100%" stop-color="#FF6B35" stop-opacity="0"/>
-        </linearGradient>
-      </defs>
-      <polygon points="${area}" fill="url(#ag)"/>
-      <polyline points="${poly}" fill="none" stroke="#FF6B35" stroke-width="2" stroke-linejoin="round"/>
-      ${yLabels}${xLabels}${dots}
-    </svg>`;
+  const xLbls=`<text x="${svgPts[0].x}" y="${H+8}" text-anchor="middle" fill="#555" font-size="9" font-family="DM Sans">${fmtDate(svgPts[0].date)}</text>
+    <text x="${svgPts[svgPts.length-1].x}" y="${H+8}" text-anchor="middle" fill="#555" font-size="9" font-family="DM Sans">${fmtDate(svgPts[svgPts.length-1].date)}</text>`;
+  box.innerHTML=`<div style="display:flex;justify-content:space-between;margin-bottom:10px">
+    <div style="font-size:12px;color:var(--muted)">${pts.length} sesi</div>
+    <div style="font-size:13px;font-weight:600;color:${trendCol}">${trendTxt}</div>
+  </div>
+  <svg width="100%" height="${H+12}" viewBox="0 0 ${W} ${H+12}" style="overflow:visible">
+    <defs><linearGradient id="ag" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FF6B35" stop-opacity=".25"/>
+      <stop offset="100%" stop-color="#FF6B35" stop-opacity="0"/>
+    </linearGradient></defs>
+    <polygon points="${area}" fill="url(#ag)"/>
+    <polyline points="${poly}" fill="none" stroke="#FF6B35" stroke-width="2" stroke-linejoin="round"/>
+    ${dots}${xLbls}
+  </svg>`;
 }
 
-function switchLogTab(tab){
-  ['log','pr','chart'].forEach(t=>{
-    document.getElementById(t+'Tab').style.display=t===tab?'block':'none';
-    document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1)).classList.toggle('on',t===tab);
+async function renderVol() {
+  const all=await DB.getAll('sets');
+  const now=new Date();
+  const weekStart=new Date(now); weekStart.setDate(now.getDate()-now.getDay());
+  const weekStr=weekStart.toISOString().slice(0,10);
+  const weekSets=all.filter(s=>s.date>=weekStr);
+
+  const byLabel={'PUSH':0,'PULL':0,'LEGS':0};
+  const totalByEx={};
+  all.forEach(s=>{
+    totalByEx[s.exerciseName]=(totalByEx[s.exerciseName]||0)+(s.volume||0);
+    const day=DAYS.find(d=>d.exercises.some(e=>e.name===s.exerciseName));
+    if(day&&byLabel[day.label]!==undefined) byLabel[day.label]+=(s.volume||0);
   });
-  if(tab==='pr') renderPR();
-  if(tab==='chart'){populateChartSelect();renderChart();}
+
+  const weekByLabel={'PUSH':0,'PULL':0,'LEGS':0};
+  weekSets.forEach(s=>{
+    const day=DAYS.find(d=>d.exercises.some(e=>e.name===s.exerciseName));
+    if(day&&weekByLabel[day.label]!==undefined) weekByLabel[day.label]+=(s.volume||0);
+  });
+
+  const colMap={'PUSH':'var(--push)','PULL':'var(--pull)','LEGS':'var(--legs)'};
+  document.getElementById('volWeek').innerHTML=Object.entries(weekByLabel).map(([k,v])=>`
+    <div class="vol-row">
+      <div class="vol-label" style="color:${colMap[k]}">${k}</div>
+      <div class="vol-val" style="color:${colMap[k]}">${fmtVol(v)}</div>
+    </div>`).join('');
+
+  // Top exercises all time
+  const topEx=Object.entries(totalByEx).filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  document.getElementById('volAll').innerHTML=topEx.length?topEx.map(([n,v])=>`
+    <div class="vol-row">
+      <div class="vol-label" style="font-size:12px">${n}</div>
+      <div class="vol-val" style="font-size:16px;color:var(--muted)">${fmtVol(v)}</div>
+    </div>`).join(''):`<div style="padding:16px;text-align:center;color:var(--dim);font-size:13px">Belum ada data volume</div>`;
 }
 
-// ══════════════════════════════
+// ════════════════════════════════
 // SETTING
-// ══════════════════════════════
-function renderSetting(){
-  document.getElementById('remToggle').checked=get('wt_rem','off')==='on';
-  document.getElementById('remTime').value=get('wt_rem_t','06:00');
-  document.getElementById('stLog').textContent=getLogs().length;
-  document.getElementById('stPR').textContent=Object.keys(getPRs()).length;
-  const {streak}=calcStreak();
-  document.getElementById('stStreak').textContent=streak+' hari';
-  const c=getChecks(),d=DAYS[todayIdx()];
-  document.getElementById('stCheck').textContent=d.exercises.filter((_,k)=>c[k]).length+'/'+d.exercises.length;
+// ════════════════════════════════
+async function renderSetting() {
+  document.getElementById('remT').checked=(await DB.getSetting('rem_on'))||false;
+  document.getElementById('remTime').value=(await DB.getSetting('rem_time'))||'06:00';
+  const all=await DB.getAll('sets');
+  const allS=await DB.getAll('settings');
+  const prs=allS.filter(s=>s.key.startsWith('pr_'));
+  const totalVol=all.reduce((sum,s)=>sum+(s.volume||0),0);
+  const cons=await calcConsistency();
+  document.getElementById('stSets').textContent=all.length;
+  document.getElementById('stPR').textContent=prs.length;
+  document.getElementById('stCons').textContent=cons.pct+'%';
+  document.getElementById('stVol').textContent=fmtVol(totalVol);
   updateNBadge();
 }
-function saveRem(){
-  const on=document.getElementById('remToggle').checked;
+async function saveRem() {
+  const on=document.getElementById('remT').checked;
   const t=document.getElementById('remTime').value;
-  set('wt_rem',on?'on':'off');set('wt_rem_t',t);
-  if(on&&Notification.permission!=='granted')toast('⚠️ Minta izin notifikasi dulu!');
-  else if(on)toast('⏰ Reminder aktif jam '+t);
+  await DB.setSetting('rem_on',on); await DB.setSetting('rem_time',t);
+  if(on&&Notification.permission!=='granted') toast('⚠️ Minta izin notifikasi dulu!');
+  else if(on) toast('⏰ Reminder aktif jam '+t);
 }
-async function askNotif(){
-  if(!('Notification' in window)){toast('Browser tidak mendukung notifikasi');return;}
+async function askNotif() {
+  if(!('Notification' in window)){toast('Browser tidak support notifikasi');return;}
   const p=await Notification.requestPermission();
   updateNBadge();
-  if(p==='granted')toast('🔔 Izin diberikan!');else toast('❌ Izin ditolak');
+  if(p==='granted') toast('🔔 Izin diberikan!'); else toast('❌ Izin ditolak');
 }
-function updateNBadge(){
+function updateNBadge() {
   const el=document.getElementById('nBadge'),btn=document.getElementById('nBtn');
-  if(!('Notification' in window)){el.className='nb nd';el.textContent='❌ Tidak didukung';return;}
+  if(!('Notification' in window)){el.className='nb-badge nb-d';el.textContent='❌ Tidak didukung';return;}
   const p=Notification.permission;
-  if(p==='granted'){el.className='nb ng';el.textContent='✅ Izin diberikan';btn.style.display='none';}
-  else if(p==='denied'){el.className='nb nd';el.textContent='❌ Ditolak';btn.style.display='none';}
-  else{el.className='nb ndf';el.textContent='⏳ Belum diminta';btn.style.display='';}
-}
-function clearAll(){
-  if(!confirm('Hapus SEMUA data? (Log, PR, Streak, Checklist)\nTidak bisa dibatalkan!'))return;
-  Object.keys(localStorage).filter(k=>k.startsWith('wt_')).forEach(k=>localStorage.removeItem(k));
-  renderHari();renderLog();renderPR();renderSetting();toast('🗑️ Semua data dihapus');
+  if(p==='granted'){el.className='nb-badge nb-g';el.textContent='✅ Izin diberikan';btn.style.display='none';}
+  else if(p==='denied'){el.className='nb-badge nb-d';el.textContent='❌ Ditolak';btn.style.display='none';}
+  else{el.className='nb-badge nb-n';el.textContent='⏳ Belum diminta';btn.style.display='';}
 }
 
-// ══════════════════════════════
+async function exportData() {
+  const sets=await DB.getAll('sets');
+  const settings=await DB.getAll('settings');
+  const data={exportedAt:new Date().toISOString(),version:'3.0',sets,settings};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url; a.download=`workout-backup-${todayStr()}.json`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  toast('📤 Data berhasil diexport!');
+}
+
+async function clearAllData() {
+  if(!confirm('Hapus SEMUA data?\n(Sets, PR, History)\nTidak bisa dibatalkan!')) return;
+  await DB.clearStore('sets'); await DB.clearStore('settings');
+  todaySets=[]; prevSessions={};
+  await renderLatihan(); await renderSetting();
+  toast('🗑️ Semua data dihapus');
+}
+
+// ════════════════════════════════
 // REMINDER
-// ══════════════════════════════
-function remCheck(){
-  if(get('wt_rem','off')!=='on'||Notification.permission!=='granted')return;
+// ════════════════════════════════
+async function remCheck() {
+  const on=await DB.getSetting('rem_on');
+  if(!on||Notification.permission!=='granted') return;
   const now=new Date();
   const hhmm=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
-  const target=get('wt_rem_t','06:00');
-  const key='wt_sent_'+todayStr()+'_'+target;
-  if(hhmm===target&&!get(key,0)){
-    set(key,1);
+  const target=await DB.getSetting('rem_time')||'06:00';
+  const sentKey='rem_sent_'+todayStr()+'_'+target;
+  const sent=await DB.getSetting(sentKey);
+  if(hhmm===target&&!sent) {
+    await DB.setSetting(sentKey,1);
     const d=DAYS[todayIdx()];
-    new Notification('💪 Waktunya Workout!',{body:'Hari ini: '+d.day+' – '+d.label+' ('+d.tag+')',tag:'workout-reminder'});
+    new Notification('💪 Waktunya Workout!',{body:d.day+' — '+d.label+' ('+d.tag+')',tag:'workout-rem'});
   }
 }
 
-// ══════════════════════════════
-// TOAST
-// ══════════════════════════════
-let toastT;
-function toast(msg){
-  const el=document.getElementById('toast');
-  el.textContent=msg;el.classList.add('show');
-  clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('show'),2800);
-}
-
-// ══════════════════════════════
+// ════════════════════════════════
 // SERVICE WORKER
-// ══════════════════════════════
-if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
+// ════════════════════════════════
+if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});
 
-// ══════════════════════════════
+// ════════════════════════════════
 // INIT
-// ══════════════════════════════
-initJadwal();
-initTimer();
-renderHari();
-setInterval(remCheck,30000);
+// ════════════════════════════════
+(async () => {
+  try {
+    await DB.open();
+    initJadwal();
+    await renderLatihan();
+    document.getElementById('loading').style.display='none';
+    document.getElementById('app').style.display='flex';
+    setInterval(remCheck, 30000);
+  } catch(e) {
+    document.getElementById('loading').innerHTML=
+      '<div style="font-size:32px">⚠️</div><div style="color:var(--red);font-size:14px">Gagal memuat: '+e.message+'</div>';
+  }
+})();
 </script>
 </body>
 </html>
