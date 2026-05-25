@@ -1161,18 +1161,24 @@ let chartType = 'weight';
 
 let currentProgTab = 'kons';
 
+const PROG_IDS = {
+  kons:  {panel:'pKons',  btn:'tpKons'},
+  pr:    {panel:'pPR',    btn:'tpPR'},
+  chart: {panel:'pChart', btn:'tpChart'},
+  vol:   {panel:'pVol',   btn:'tpVol'},
+};
 function switchProg(tab) {
   currentProgTab = tab;
-  ['kons','pr','chart','vol'].forEach(t=>{
-    const panel = document.getElementById('p'+t.charAt(0).toUpperCase()+t.slice(1));
-    const btn = document.getElementById('tp'+t.charAt(0).toUpperCase()+t.slice(1));
+  Object.entries(PROG_IDS).forEach(([t,ids])=>{
+    const panel = document.getElementById(ids.panel);
+    const btn   = document.getElementById(ids.btn);
     if(panel) panel.style.display = t===tab ? 'block' : 'none';
-    if(btn) btn.classList.toggle('on', t===tab);
+    if(btn)   btn.classList.toggle('on', t===tab);
   });
-  if(tab==='kons') renderKons();
-  if(tab==='pr') renderPR();
+  if(tab==='kons')  renderKons();
+  if(tab==='pr')    renderPR();
   if(tab==='chart') { populateChartSel(); renderChart(); }
-  if(tab==='vol') renderVol();
+  if(tab==='vol')   renderVol();
 }
 
 async function renderProgres() {
